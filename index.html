@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merch Stefan.8894</title>
     <style>
-        /* Stilurile pentru design */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1a1a1a;
@@ -17,7 +16,6 @@
             align-items: center;
         }
 
-        /* Meniul de sus cu coșul */
         header {
             width: 100%;
             background-color: #111;
@@ -44,7 +42,6 @@
             cursor: pointer;
         }
 
-        /* Zona de produs */
         .container {
             max-width: 600px;
             margin: 40px 20px;
@@ -67,7 +64,23 @@
             font-size: 24px;
             color: #4caf50;
             font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stock-info {
+            color: #ff9800;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .delivery-info {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
             margin: 15px 0;
+            border-left: 4px solid #4caf50;
         }
 
         .btn-add {
@@ -80,11 +93,19 @@
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
+            width: 100%;
         }
 
         .btn-add:hover {
             background-color: #cc0000;
-            transform: scale(1.05);
+            transform: scale(1.02);
+        }
+
+        .btn-add:disabled {
+            background-color: #555;
+            color: #aaa;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .yt-link {
@@ -104,19 +125,23 @@
 
     <header>
         <h1>Stefan.8894 Shop</h1>
-        <div class="cart-icon">🛒 Coș: <span id="cart-count">0</span></div>
+        <div class="cart-icon" onclick="veziCosul()">🛒 Coș: <span id="cart-count">0</span></div>
     </header>
 
     <div class="container">
-        <h2>Breloc Oficial din Lemn</h2>
+        <h2>Breloc Original din Lemn</h2>
         
         <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
         
-        <p>Breloc din lemn premium, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
+        <p>Breloc Stefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
         
         <div class="price">15.00 RON</div>
         
-        <button class="btn-add" onclick="adaugaInCos()">Adaugă în coș</button>
+        <div class="stock-info">Stoc limitat: <span id="stock-count">13</span> rămase!</div>
+        
+        <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul!</div>
+        
+        <button class="btn-add" id="add-button" onclick="adaugaInCos()">Adaugă în coș</button>
 
         <br>
         <a class="yt-link" href="https://youtube.com/@Stefan.8894" target="_blank">Vizitează canalul meu de YouTube</a>
@@ -124,11 +149,32 @@
 
     <script>
         let numarProduse = 0;
+        let stocDisponibil = 13;
 
         function adaugaInCos() {
-            numarProduse++;
-            document.getElementById('cart-count').innerText = numarProduse;
-            alert('Produsul a fost adăugat în coș!');
+            if (stocDisponibil > 0) {
+                numarProduse++;
+                stocDisponibil--;
+                
+                document.getElementById('cart-count').innerText = numarProduse;
+                document.getElementById('stock-count').innerText = stocDisponibil;
+                
+                alert('Produsul a fost adăugat în coș! Plata se va face cash la livrare.');
+                
+                if (stocDisponibil === 0) {
+                    const buton = document.getElementById('add-button');
+                    buton.innerText = "Stoc Epuizat";
+                    buton.disabled = true;
+                }
+            }
+        }
+
+        function veziCosul() {
+            if (numarProduse === 0) {
+                alert("Coșul tău este gol. Adaugă un obiect în coș!");
+            } else {
+                alert(`Ai ${numarProduse} produse în coș. Total de plată: ${numarProduse * 15} RON. Plata se achită la livrare!`);
+            }
         }
     </script>
 
