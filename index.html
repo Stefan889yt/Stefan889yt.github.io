@@ -42,14 +42,25 @@
             cursor: pointer;
         }
 
+        .main-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
         .container {
-            max-width: 600px;
-            margin: 40px 20px;
+            width: 100%;
+            max-width: 500px;
             background-color: #262626;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             text-align: center;
+            margin-bottom: 30px;
         }
 
         .product-img {
@@ -83,7 +94,7 @@
             border-left: 4px solid #4caf50;
         }
 
-        .btn-add {
+        .btn-add, .btn-send {
             background-color: #ff0000;
             color: white;
             border: none;
@@ -96,16 +107,61 @@
             width: 100%;
         }
 
-        .btn-add:hover {
+        .btn-add:hover, .btn-send:hover {
             background-color: #cc0000;
-            transform: scale(1.02);
         }
 
-        .btn-add:disabled {
-            background-color: #555;
-            color: #aaa;
-            cursor: not-allowed;
-            transform: none;
+        .cart-page {
+            width: 100%;
+            max-width: 600px;
+            background-color: #222;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-sizing: border-box;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .cart-table th, .cart-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        .cart-total {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 15px;
+            color: #4caf50;
+        }
+
+        .order-form {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .order-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .order-form input, .order-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            box-sizing: border-box;
         }
 
         .yt-link {
@@ -115,66 +171,99 @@
             text-decoration: none;
             font-size: 14px;
         }
-
-        .yt-link:hover {
-            color: #ff0000;
-        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Stefan.8894 Shop</h1>
-        <div class="cart-icon" onclick="veziCosul()">🛒 Coș: <span id="cart-count">0</span></div>
+        <div class="cart-icon" onclick="scrollToCart()">🛒 Vezi Coșul</div>
     </header>
 
-    <div class="container">
-        <h2>Breloc Original din Lemn</h2>
-        
-        <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
-        
-        <p>Breloc Stefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
-        
-        <div class="price">15.00 RON</div>
-        
-        <div class="stock-info">Stoc limitat: <span id="stock-count">13</span> rămase!</div>
-        
-        <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul!</div>
-        
-        <button class="btn-add" id="add-button" onclick="adaugaInCos()">Adaugă în coș</button>
+    <div class="main-layout">
+        <div class="container">
+            <h2>Breloc Original din Lemn</h2>
+            <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
+            <p>Breloc Stefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
+            <div class="price">15.00 RON</div>
+            <div class="stock-info">Stoc total disponibil: 13 bucăți</div>
+            <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul!</div>
+            <button class="btn-add" id="add-button" onclick="adaugaInCos()">Adaugă în coș</button>
+            <br>
+            <a class="yt-link" href="https://youtube.com/@Stefan.8894" target="_blank">Vizitează canalul meu de YouTube</a>
+        </div>
 
-        <br>
-        <a class="yt-link" href="https://youtube.com/@Stefan.8894" target="_blank">Vizitează canalul meu de YouTube</a>
+        <div class="cart-page" id="cart-section">
+            <h2>🛒 Coșul tău de cumpărături</h2>
+            <div id="cart-empty-message">Coșul este gol. Adaugă produse de mai sus!</div>
+            
+            <div id="cart-content" style="display: none;">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Produs</th>
+                            <th>Cantitate</th>
+                            <th>Preț</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Breloc Original din Lemn</td>
+                            <td id="cart-qty">0</td>
+                            <td id="cart-price">0 RON</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="cart-total">Total de plată: <span id="cart-total-value">0</span> RON</div>
+
+                <div class="order-form">
+                    <h3>Formular de Livrare (Plată Cash la Curier)</h3>
+                    <form action="https://formspree.io/f/xdaqnvlk" method="POST" id="my-form">
+                        <label for="name">Nume și Prenume:</label>
+                        <input type="text" name="Nume" id="name" required placeholder="Ex: Popescu Stefan">
+
+                        <label for="phone">Telefon:</label>
+                        <input type="tel" name="Telefon" id="phone" required placeholder="Ex: 0722xxxxxx">
+
+                        <label for="address">Adresă completă pentru livrare:</label>
+                        <textarea name="Adresa" id="address" rows="3" required placeholder="Oraș, Stradă, Număr, Bloc..."></textarea>
+                        
+                        <input type="hidden" name="Cantitate Comandata" id="hidden-qty">
+                        <input type="hidden" name="Total Plata" id="hidden-total">
+
+                        <button type="submit" class="btn-send">Trimite Comanda</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         let numarProduse = 0;
-        let stocDisponibil = 13;
+        const pretUnitar = 15;
 
         function adaugaInCos() {
-            if (stocDisponibil > 0) {
-                numarProduse++;
-                stocDisponibil--;
+            numarProduse++;
+            actualizeazaCos();
+            scrollToCart();
+        }
+
+        function actualizeazaCos() {
+            if (numarProduse > 0) {
+                document.getElementById('cart-empty-message').style.display = 'none';
+                document.getElementById('cart-content').style.display = 'block';
                 
-                document.getElementById('cart-count').innerText = numarProduse;
-                document.getElementById('stock-count').innerText = stocDisponibil;
+                document.getElementById('cart-qty').innerText = numarProduse;
+                document.getElementById('cart-price').innerText = (numarProduse * pretUnitar) + " RON";
+                document.getElementById('cart-total-value').innerText = numarProduse * pretUnitar;
                 
-                alert('Produsul a fost adăugat în coș! Plata se va face cash la livrare.');
-                
-                if (stocDisponibil === 0) {
-                    const buton = document.getElementById('add-button');
-                    buton.innerText = "Stoc Epuizat";
-                    buton.disabled = true;
-                }
+                document.getElementById('hidden-qty').value = numarProduse;
+                document.getElementById('hidden-total').value = (numarProduse * pretUnitar) + " RON";
             }
         }
 
-        function veziCosul() {
-            if (numarProduse === 0) {
-                alert("Coșul tău este gol. Adaugă un obiect în coș!");
-            } else {
-                alert(`Ai ${numarProduse} produse în coș. Total de plată: ${numarProduse * 15} RON. Plata se achită la livrare!`);
-            }
+        function scrollToCart() {
+            document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 
