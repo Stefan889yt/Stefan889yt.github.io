@@ -117,7 +117,33 @@
             text-align: left;
         }
 
-        .btn-add, .btn-send {
+        /* Sectiune Coduri Reducere */
+        .promo-section {
+            background-color: #1f1f1f;
+            border: 1px dashed #555;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .promo-section h4 {
+            margin: 0 0 10px 0;
+            color: #ff9800;
+        }
+
+        .coupon-code {
+            display: inline-block;
+            background-color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        .btn-add, .btn-send, .btn-promo {
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -132,12 +158,32 @@
             letter-spacing: 0.5px;
         }
 
-        .btn-add:hover, .btn-send:hover {
+        .btn-add:hover, .btn-send:hover, .btn-promo:hover {
             background-color: var(--primary-hover);
-            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
         }
 
-        /* Sectiunea de Cos */
+        .btn-promo {
+            width: auto;
+            padding: 10px 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .promo-input-group {
+            display: flex;
+            margin: 15px 0;
+        }
+
+        .promo-input-group input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+        }
+
+        /* Sectiune Cos */
         .cart-page {
             width: 100%;
             max-width: 600px;
@@ -152,185 +198,3 @@
         .cart-page h2 {
             margin-top: 0;
             border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
-
-        .cart-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .cart-table th, .cart-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #444;
-        }
-
-        .cart-table th {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .cart-total {
-            font-size: 22px;
-            font-weight: bold;
-            text-align: right;
-            margin-top: 20px;
-            color: var(--success-color);
-        }
-
-        .order-form {
-            margin-top: 30px;
-            text-align: left;
-            border-top: 1px solid #333;
-            padding-top: 20px;
-        }
-
-        .order-form h3 {
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        .order-form label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-            font-size: 14px;
-            color: #ccc;
-        }
-
-        .order-form input, .order-form textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: white;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-
-        .order-form input:focus, .order-form textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .yt-link {
-            display: inline-block;
-            margin-top: 25px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        .yt-link:hover {
-            color: var(--primary-color);
-        }
-
-        #cart-empty-message {
-            color: var(--text-muted);
-            font-style: italic;
-            text-align: center;
-            padding: 20px 0;
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>Stefan.8894 Shop</h1>
-        <div class="cart-icon" onclick="scrollToCart()">🛒 Vezi Coșul</div>
-    </header>
-
-    <div class="main-layout">
-        <div class="container">
-            <h2>Breloc Original din Lemn</h2>
-            <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
-            <p>Breloc Stefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
-            <div class="price">7.00 RON</div>
-            <div class="stock-info">Stoc total disponibil: 13 bucăți</div>
-            <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul la tine!</div>
-            <button class="btn-add" id="add-button" onclick="adaugaInCos()">Adaugă în coș</button>
-            <br>
-            <a class="yt-link" href="https://youtube.com/@Stefan.8894" target="_blank">Vizitează canalul meu de YouTube</a>
-        </div>
-
-        <div class="cart-page" id="cart-section">
-            <h2>🛒 Coșul tău</h2>
-            <div id="cart-empty-message">Coșul este gol în acest moment. Adaugă un produs de mai sus!</div>
-            
-            <div id="cart-content" style="display: none;">
-                <table class="cart-table">
-                    <thead>
-                        <tr>
-                            <th>Produs</th>
-                            <th>Cantitate</th>
-                            <th>Preț</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Breloc Original din Lemn</td>
-                            <td id="cart-qty">0</td>
-                            <td id="cart-price">0 RON</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="cart-total">Total: <span id="cart-total-value">0</span> RON</div>
-
-                <div class="order-form">
-                    <h3>Detalii Livrare</h3>
-                    <form action="https://formspree.io/f/xdaqnvlk" method="POST" id="my-form">
-                        <label for="name">Nume complet:</label>
-                        <input type="text" name="Nume" id="name" required placeholder="Nume și Prenume">
-
-                        <label for="phone">Număr de Telefon:</label>
-                        <input type="tel" name="Telefon" id="phone" required placeholder="07xxxxxxxx">
-
-                        <label for="address">Adresă de livrare:</label>
-                        <textarea name="Adresa" id="address" rows="3" required placeholder="Oraș, județ, stradă, număr..."></textarea>
-                        
-                        <input type="hidden" name="Cantitate Comandata" id="hidden-qty">
-                        <input type="hidden" name="Total Plata" id="hidden-total">
-
-                        <button type="submit" class="btn-send">Finalizează Comanda</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let numarProduse = 0;
-        const pretUnitar = 7; // Schimbat prețul la 7 lei
-
-        function adaugaInCos() {
-            numarProduse++;
-            actualizeazaCos();
-            scrollToCart();
-        }
-
-        function actualizeazaCos() {
-            if (numarProduse > 0) {
-                document.getElementById('cart-empty-message').style.display = 'none';
-                document.getElementById('cart-content').style.display = 'block';
-                
-                document.getElementById('cart-qty').innerText = numarProduse;
-                document.getElementById('cart-price').innerText = (numarProduse * pretUnitar) + " RON";
-                document.getElementById('cart-total-value').innerText = numarProduse * pretUnitar;
-                
-                document.getElementById('hidden-qty').value = numarProduse;
-                document.getElementById('hidden-total').value = (numarProduse * pretUnitar) + " RON";
-            }
-        }
-
-        function scrollToCart() {
-            document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
-
-</body>
-</html>
