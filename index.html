@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merch Stefan.8894</title>
+    <style>
+        /* Stilurile pentru design */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Meniul de sus cu coșul */
+        header {
+            width: 100%;
+            background-color: #111;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            border-bottom: 2px solid #ff0000;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #ff0000;
+        }
+
+        .cart-icon {
+            background-color: #ff0000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Zona de produs */
+        .container {
+            max-width: 600px;
+            margin: 40px 20px;
+            background-color: #262626;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .product-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 3px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 24px;
+            color: #4caf50;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .btn-add {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #cc0000;
+            transform: scale(1.05);
+        }
+
+        .yt-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .yt-link:hover {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Stefan.8894 Shop</h1>
+        <div class="cart-icon">🛒 Coș: <span id="cart-count">0</span></div>
+    </header>
+
+    <div class="container">
+        <h2>Breloc Oficial din Lemn</h2>
+        
+        <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
+        
+        <p>Breloc din lemn premium, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
+        
+        <div class="price">15.00 RON</div>
+        
+        <button class="btn-add" onclick="adaugaInCos()">Adaugă în coș</button>
+
+        <br>
+        <a class="yt-link" href="https://youtube.com/@Stefan.8894" target="_blank">Vizitează canalul meu de YouTube</a>
+    </div>
+
+    <script>
+        let numarProduse = 0;
+
+        function adaugaInCos() {
+            numarProduse++;
+            document.getElementById('cart-count').innerText = numarProduse;
+            alert('Produsul a fost adăugat în coș!');
+        }
+    </script>
+
+</body>
+</html>
