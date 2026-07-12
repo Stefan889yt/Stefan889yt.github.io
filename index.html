@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merch Stefan.8894</title>
     <style>
+        :root {
+            --primary-color: #ff0000;
+            --primary-hover: #cc0000;
+            --bg-main: #1a1a1a;
+            --bg-card: #262626;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --success-color: #4caf50;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
+            background-color: var(--bg-main);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
             display: flex;
@@ -24,22 +34,28 @@
             justify-content: space-between;
             align-items: center;
             box-sizing: border-box;
-            border-bottom: 2px solid #ff0000;
+            border-bottom: 2px solid var(--primary-color);
         }
 
         header h1 {
             margin: 0;
             font-size: 24px;
-            color: #ff0000;
+            color: var(--primary-color);
+            letter-spacing: 1px;
         }
 
         .cart-icon {
-            background-color: #ff0000;
+            background-color: var(--primary-color);
             color: white;
             padding: 10px 20px;
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .cart-icon:hover {
+            background-color: var(--primary-hover);
         }
 
         .main-layout {
@@ -55,10 +71,10 @@
         .container {
             width: 100%;
             max-width: 500px;
-            background-color: #262626;
+            background-color: var(--bg-card);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             text-align: center;
             margin-bottom: 30px;
         }
@@ -67,13 +83,18 @@
             max-width: 100%;
             height: auto;
             border-radius: 10px;
-            border: 3px solid #333;
+            border: 2px solid #333;
             margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .product-img:hover {
+            transform: scale(1.02);
         }
 
         .price {
-            font-size: 24px;
-            color: #4caf50;
+            font-size: 28px;
+            color: var(--success-color);
             font-weight: bold;
             margin: 10px 0;
         }
@@ -82,35 +103,41 @@
             color: #ff9800;
             font-weight: bold;
             margin-bottom: 15px;
+            font-size: 15px;
         }
 
         .delivery-info {
             background-color: #333;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 8px;
             color: #fff;
             font-size: 14px;
             margin: 15px 0;
-            border-left: 4px solid #4caf50;
+            border-left: 4px solid var(--success-color);
+            text-align: left;
         }
 
         .btn-add, .btn-send {
-            background-color: #ff0000;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 14px 30px;
             font-size: 16px;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s;
             width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-add:hover, .btn-send:hover {
-            background-color: #cc0000;
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
         }
 
+        /* Sectiunea de Cos */
         .cart-page {
             width: 100%;
             max-width: 600px;
@@ -119,6 +146,13 @@
             border-radius: 15px;
             border: 1px solid #333;
             box-sizing: border-box;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .cart-page h2 {
+            margin-top: 0;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
         }
 
         .cart-table {
@@ -133,43 +167,74 @@
             border-bottom: 1px solid #444;
         }
 
+        .cart-table th {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
         .cart-total {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             text-align: right;
-            margin-top: 15px;
-            color: #4caf50;
+            margin-top: 20px;
+            color: var(--success-color);
         }
 
         .order-form {
-            margin-top: 25px;
+            margin-top: 30px;
             text-align: left;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        .order-form h3 {
+            margin-bottom: 20px;
+            color: #fff;
         }
 
         .order-form label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: bold;
             font-size: 14px;
+            color: #ccc;
         }
 
         .order-form input, .order-form textarea {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
             border: 1px solid #444;
             background-color: #333;
             color: white;
             box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .order-form input:focus, .order-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
         .yt-link {
             display: inline-block;
             margin-top: 25px;
-            color: #aaa;
+            color: var(--text-muted);
             text-decoration: none;
             font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .yt-link:hover {
+            color: var(--primary-color);
+        }
+
+        #cart-empty-message {
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            padding: 20px 0;
         }
     </style>
 </head>
@@ -185,17 +250,17 @@
             <h2>Breloc Original din Lemn</h2>
             <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
             <p>Breloc Stefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
-            <div class="price">15.00 RON</div>
+            <div class="price">7.00 RON</div>
             <div class="stock-info">Stoc total disponibil: 13 bucăți</div>
-            <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul!</div>
+            <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul la tine!</div>
             <button class="btn-add" id="add-button" onclick="adaugaInCos()">Adaugă în coș</button>
             <br>
             <a class="yt-link" href="https://youtube.com/@Stefan.8894" target="_blank">Vizitează canalul meu de YouTube</a>
         </div>
 
         <div class="cart-page" id="cart-section">
-            <h2>🛒 Coșul tău de cumpărături</h2>
-            <div id="cart-empty-message">Coșul este gol. Adaugă produse de mai sus!</div>
+            <h2>🛒 Coșul tău</h2>
+            <div id="cart-empty-message">Coșul este gol în acest moment. Adaugă un produs de mai sus!</div>
             
             <div id="cart-content" style="display: none;">
                 <table class="cart-table">
@@ -214,24 +279,24 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="cart-total">Total de plată: <span id="cart-total-value">0</span> RON</div>
+                <div class="cart-total">Total: <span id="cart-total-value">0</span> RON</div>
 
                 <div class="order-form">
-                    <h3>Formular de Livrare (Plată Cash la Curier)</h3>
+                    <h3>Detalii Livrare</h3>
                     <form action="https://formspree.io/f/xdaqnvlk" method="POST" id="my-form">
-                        <label for="name">Nume și Prenume:</label>
-                        <input type="text" name="Nume" id="name" required placeholder="Ex: Popescu Stefan">
+                        <label for="name">Nume complet:</label>
+                        <input type="text" name="Nume" id="name" required placeholder="Nume și Prenume">
 
-                        <label for="phone">Telefon:</label>
-                        <input type="tel" name="Telefon" id="phone" required placeholder="Ex: 0722xxxxxx">
+                        <label for="phone">Număr de Telefon:</label>
+                        <input type="tel" name="Telefon" id="phone" required placeholder="07xxxxxxxx">
 
-                        <label for="address">Adresă completă pentru livrare:</label>
-                        <textarea name="Adresa" id="address" rows="3" required placeholder="Oraș, Stradă, Număr, Bloc..."></textarea>
+                        <label for="address">Adresă de livrare:</label>
+                        <textarea name="Adresa" id="address" rows="3" required placeholder="Oraș, județ, stradă, număr..."></textarea>
                         
                         <input type="hidden" name="Cantitate Comandata" id="hidden-qty">
                         <input type="hidden" name="Total Plata" id="hidden-total">
 
-                        <button type="submit" class="btn-send">Trimite Comanda</button>
+                        <button type="submit" class="btn-send">Finalizează Comanda</button>
                     </form>
                 </div>
             </div>
@@ -240,7 +305,7 @@
 
     <script>
         let numarProduse = 0;
-        const pretUnitar = 15;
+        const pretUnitar = 7; // Schimbat prețul la 7 lei
 
         function adaugaInCos() {
             numarProduse++;
