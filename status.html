@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Comandă - Stefan.8894</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #262626;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            text-align: center;
+            margin-top: 50px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ff0000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #333;
+            display: none;
+            border-left: 5px solid #ff9800;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Urmărește Comanda Ta</h2>
+        <p>Introdu codul de comandă primit de la Ștefan pentru a vedea stadiul livrării.</p>
+        <input type="text" id="order-id-input" placeholder="Ex: STF889">
+        <button onclick="verificaStatus()">Verifică Status</button>
+
+        <div class="status-box" id="status-box">
+            <h3 id="status-title" style="color:#ff9800; margin:0 0 5px 0;">Status: Se procesează</h3>
+            <p id="status-desc" style="margin:0; font-size:14px; color:#ccc;">Comanda ta a fost primită și urmează să fie pregătită pentru livrare.</p>
+        </div>
+    </div>
+
+    <script>
+        // Aici definești manual stadiul fiecărui cod de comandă pe care l-ai dat clienților
+        const bazeDateStatus = {
+            "STF889": {
+                status: "Comandă Expediată! 🚚",
+                descriere: "Pachetul tău a fost predat curierului. Va ajunge în 1-2 zile lucrătoare."
+            },
+            "STF123": {
+                status: "În curs de pregătire 📦",
+                descriere: "Brelocul tău este gravat acum și va fi trimis în curând."
+            }
+        };
+
+        function verificaStatus() {
+            const cod = document.getElementById('order-id-input').value.trim().toUpperCase();
+            const box = document.getElementById('status-box');
+            const titlu = document.getElementById('status-title');
+            const desc = document.getElementById('status-desc');
+
+            if (bazeDateStatus[cod]) {
+                titlu.innerText = "Status: " + bazeDateStatus[cod].status;
+                desc.innerText = bazeDateStatus[cod].descriere;
+                box.style.display = "block";
+            } else {
+                alert("Codul de comandă nu a fost găsit sau este greșit!");
+                box.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

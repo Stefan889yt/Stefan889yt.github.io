@@ -85,11 +85,6 @@
             border-radius: 10px;
             border: 2px solid #333;
             margin-bottom: 20px;
-            transition: transform 0.3s;
-        }
-
-        .product-img:hover {
-            transform: scale(1.02);
         }
 
         .price {
@@ -115,34 +110,6 @@
             margin: 15px 0;
             border-left: 4px solid var(--success-color);
             text-align: left;
-        }
-
-        /* Pagina Vouchere / Reduceri */
-        .promo-box {
-            background-color: #1f1f1f;
-            border: 2px dashed #444;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .promo-box h4 {
-            margin: 0 0 10px 0;
-            color: #ff9800;
-            font-size: 16px;
-        }
-
-        .coupon {
-            display: inline-block;
-            background-color: #333;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-weight: bold;
-            color: #fff;
-            border: 1px solid #555;
-            margin-right: 5px;
         }
 
         .btn-add, .btn-send, .btn-promo {
@@ -187,7 +154,7 @@
             font-family: inherit;
         }
 
-        /* Sectiunea de Cos */
+        /* Sectiune Cos */
         .cart-page {
             width: 100%;
             max-width: 600px;
@@ -300,12 +267,6 @@
             <p>Breloc Stefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
             <div class="price">7.00 RON</div>
             <div class="stock-info">Stoc total disponibil: 13 bucăți</div>
-            
-            <div class="promo-box">
-                <h4>🔥 Coduri de Reducere Active:</h4>
-                <p>• Folosește codul <span class="coupon">STEFAN2</span> pentru 2 lei reducere!</p>
-                <p>• Folosește codul <span class="coupon">MERCH1</span> pentru 1 leu reducere!</p>
-            </div>
 
             <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul la tine!</div>
             <button class="btn-add" id="add-button" onclick="adaugaInCos()">Adaugă în coș</button>
@@ -336,7 +297,7 @@
                 </table>
 
                 <div class="promo-group">
-                    <input type="text" id="promo-code-input" placeholder="Introdu codul de reducere aici">
+                    <input type="text" id="promo-code-input" placeholder="Introdu codul de reducere secrete">
                     <button class="btn-promo" onclick="aplicaReducere()">Aplică</button>
                 </div>
                 
@@ -367,12 +328,24 @@
     </div>
 
     <script>
-        let numarProduse = 0;
+        let numarProduse = parseInt(localStorage.getItem('numarProduse')) || 0;
         const pretUnitar = 7;
-        let reducereSuma = 0;
+        let reducereTip = localStorage.getItem('reducereTip') || "niciuna"; 
+        let reducereValoare = parseFloat(localStorage.getItem('reducereValoare')) || 0;
+
+        // La pornirea paginii, dacă aveam deja produse în coș, le afișăm
+        window.onload = function() {
+            if (numarProduse > 0) {
+                actualizeazaCos();
+                if (reducereTip !== "niciuna") {
+                    afiseazaReducereaVizual();
+                }
+            }
+        }
 
         function adaugaInCos() {
             numarProduse++;
+            localStorage.setItem('numarProduse', numarProduse);
             actualizeazaCos();
             scrollToCart();
         }
@@ -383,41 +356,77 @@
                 document.getElementById('cart-content').style.display = 'block';
                 
                 document.getElementById('cart-qty').innerText = numarProduse;
-                document.getElementById('cart-price').innerText = (numarProduse * pretUnitar) + " RON";
                 
-                let totalSuma = (numarProduse * pretUnitar) - reducereSuma;
-                if(totalSuma < 0) totalSuma = 0; // Prețul nu poate fi negativ
+                let subtotal = numarProduse * pretUnitar;
+                document.getElementById('cart-price').innerText = subtotal + " RON";
                 
-                document.getElementById('cart-total-value').innerText = totalSuma;
+                let totalSuma = subtotal;
+                if (reducereTip === "procent") {
+                    totalSuma = subtotal - (subtotal * (reducereValoare / 100));
+                } else if (reducereTip === "suma") {
+                    totalSuma = subtotal - reducereValoare;
+                }
                 
-                // Setare valori pentru e-mail
+                if(totalSuma < 0) totalSuma = 0;
+                
+                document.getElementById('cart-total-value').innerText = totalSuma.toFixed(2);
+                
                 document.getElementById('hidden-qty').value = numarProduse;
-                document.getElementById('hidden-total').value = totalSuma + " RON";
+                document.getElementById('hidden-total').value = totalSuma.toFixed(2) + " RON";
             }
         }
 
         function aplicaReducere() {
             const codIntrodus = document.getElementById('promo-code-input').value.trim().toUpperCase();
-            const afisajReducere = document.getElementById('discount-display');
             
-            if (codIntrodus === "STEFAN2") {
-                reducereSuma = 2;
-                afisajReducere.innerText = "Reducere aplicată: -2 RON";
-                afisajReducere.style.display = "block";
-                document.getElementById('hidden-promo').value = "STEFAN2 (-2 RON)";
-                alert("Codul STEFAN2 a fost aplicat cu succes!");
+            if (codIntrodus === "STEFAN100") {
+                reducereTip = "procent";
+                reducereValoare = 100;
+                localStorage.setItem('reducereTip', "procent");
+                localStorage.setItem('reducereValoare', "100");
+                alert("Codul STEFAN100 (100% Reducere) a fost aplicat!");
+            } else if (codIntrodus === "STEFAN50") {
+                reducereTip = "procent";
+                reducereValoare = 50;
+                localStorage.setItem('reducereTip', "procent");
+                localStorage.setItem('reducereValoare', "50");
+                alert("Codul STEFAN50 (50% Reducere) a fost aplicat!");
+            } else if (codIntrodus === "STEFAN2") {
+                reducereTip = "suma";
+                reducereValoare = 2;
+                localStorage.setItem('reducereTip', "suma");
+                localStorage.setItem('reducereValoare', "2");
+                alert("Codul STEFAN2 (-2 RON) a fost aplicat!");
             } else if (codIntrodus === "MERCH1") {
-                reducereSuma = 1;
-                afisajReducere.innerText = "Reducere aplicată: -1 RON";
-                afisajReducere.style.display = "block";
-                document.getElementById('hidden-promo').value = "MERCH1 (-1 RON)";
-                alert("Codul MERCH1 a fost aplicat cu succes!");
+                reducereTip = "suma";
+                reducereValoare = 1;
+                localStorage.setItem('reducereTip', "suma");
+                localStorage.setItem('reducereValoare', "1");
+                alert("Codul MERCH1 (-1 RON) a fost aplicat!");
+            } else if (codIntrodus === "VIP3") {
+                reducereTip = "suma";
+                reducereValoare = 3;
+                localStorage.setItem('reducereTip', "suma");
+                localStorage.setItem('reducereValoare', "3");
+                alert("Codul VIP3 (-3 RON) a fost aplicat!");
             } else {
-                alert("Codul introdus nu este valid!");
+                alert("Cod invalid!");
                 return;
             }
             
+            document.getElementById('hidden-promo').value = codIntrodus;
+            afiseazaReducereaVizual();
             actualizeazaCos();
+        }
+
+        function afiseazaReducereaVizual() {
+            const afisajReducere = document.getElementById('discount-display');
+            if (reducereTip === "procent") {
+                afisajReducere.innerText = `Reducere aplicată: -${reducereValoare}%`;
+            } else {
+                afisajReducere.innerText = `Reducere aplicată: -${reducereValoare} RON`;
+            }
+            afisajReducere.style.display = "block";
         }
 
         function scrollToCart() {
