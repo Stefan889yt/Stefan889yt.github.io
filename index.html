@@ -525,9 +525,9 @@
             document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // SALVARE ÎN CLOUD + TRIMITERE FORMSPREE LA FIECARE COMANDĂ NOUĂ
+        // SALVARE ÎN CLOUD + TRIMITERE FORMSPREE LA FIECARE COMANDĂ NOUĂ (ASINCRONĂ ȘI SIGURĂ)
         async function finalizeazaSiSalveazaComanda(event) {
-            event.preventDefault(); // Oprim temporar Formspree pentru a salva în cloud mai întâi
+            event.preventDefault(); // Oprim trimiterea standard a formularului ca să nu reîncarce pagina prematur
 
             const btnTrimite = document.querySelector('.btn-send');
             btnTrimite.innerText = "Se procesează...";
@@ -537,13 +537,12 @@
             let numarAleatoriu = Math.floor(100 + Math.random() * 900);
             let codComandaUnic = "STF" + numarAleatoriu;
 
-            // Punem codul în formular
+            // Punem codul în formular în mod dinamic
             document.getElementById('hidden-status-code').value = codComandaUnic;
 
-            // 2. Trimitem comanda în cloud (JSONbin) pentru a o vedea în panou
             try {
-                // Preluăm starea actuală din JSONbin
-                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                // 2. Preluăm datele actuale din JSONbin (folosim timestamp ca să evităm cache-ul browserului)
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
                     headers: { "X-Master-Key": API_KEY }
                 });
                 let data = await res.json();
@@ -553,14 +552,14 @@
                     serverRecord.statusuriComenzi = {};
                 }
 
-                // STATUS MODIFICAT ÎN: "Comandă plasată"
+                // Înregistrăm noul cod în Cloud cu statusul „Comandă plasată”
                 serverRecord.statusuriComenzi[codComandaUnic] = {
                     status: "Comandă plasată",
-                    descriere: `Comanda pentru ${document.getElementById('name').value} a fost înregistrată cu succes în sistem și urmează să fie pregătită!`
+                    descriere: `Comanda pentru ${document.getElementById('name').value.trim()} a fost înregistrată cu succes în sistem și urmează să fie pregătită!`
                 };
 
-                // Actualizăm JSONbin cu noul obiect
-                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                // 3. Salvăm înapoi în Cloud (PUT pe JSONbin) și AȘTEPTĂM confirmarea completă de la server (await)
+                let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -569,10 +568,14 @@
                     body: JSON.stringify(serverRecord)
                 });
 
-                // 3. Afișăm alerta clientului
-                alert(`IMPORTANT:\nCodul tău de urmărire a comenzii este: ${codComandaUnic}\n\nNotează-ți acest cod! Îl poți folosi pe pagina "Urmărește comanda ta".`);
+                if (!updateRes.ok) {
+                    throw new Error("Eroare la salvarea codului în baza de date.");
+                }
 
-                // 4. Trimitem datele la Formspree
+                // 4. Afișăm alerta IMPORTANTĂ clientului, asigurându-ne că el vede codul pe ecran
+                alert(`IMPORTANT:\nCodul tău de urmărire a comenzii este: ${codComandaUnic}\n\nNotează-ți acest cod! Îl poți folosi pe pagina "Urmărește comanda ta" în meniul magazinului.`);
+
+                // 5. Trimitem datele către Formspree în fundal (prin AJAX/fetch) pentru a evita crash-ul paginii
                 const form = document.getElementById('my-form');
                 let formData = new FormData(form);
 
@@ -585,16 +588,18 @@
                 });
 
                 if (formspreeRes.ok) {
+                    alert("Comandă trimisă cu succes! Te vom contacta în cel mai scurt timp.");
                     golesteCos();
-                    alert("Comandă trimisă cu succes!");
-                    window.location.reload();
+                    window.location.reload(); // Reîncărcăm pagina în siguranță abia acum
                 } else {
-                    alert("Comanda s-a salvat în sistem, dar a existat o problemă la notificarea prin e-mail.");
+                    alert("Comanda s-a înregistrat, dar a apărut o problemă la e-mail-ul Formspree. O vom procesa manual!");
+                    golesteCos();
+                    window.location.reload();
                 }
 
             } catch (error) {
-                console.error(error);
-                alert("A apărut o eroare la salvarea comenzii! Te rugăm să încerci din nou.");
+                console.error("Eroare la salvare:", error);
+                alert("A apărut o eroare la conexiunea cu baza de date! Te rugăm să încerci din nou.");
             } finally {
                 btnTrimite.innerText = "Finalizează Comanda";
                 btnTrimite.disabled = false;
