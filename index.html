@@ -369,7 +369,7 @@
 
                 <div class="order-form">
                     <h3>Detalii Livrare</h3>
-                    <form action="https://formspree.io/f/xdaqnvlk" method="POST" id="my-form">
+                    <form action="https://formspree.io/f/xdaqnvlk" method="POST" id="my-form" onsubmit="genereazaCodComanda(event)">
                         <label for="name">Nume complet:</label>
                         <input type="text" name="Nume" id="name" required placeholder="Nume și Prenume">
 
@@ -377,8 +377,9 @@
                         <input type="tel" name="Telefon" id="phone" required placeholder="07xxxxxxxx">
 
                         <label for="address">Adresă de livrare:</label>
-                        <textarea name="Adresa" id="address" rows="3" required placeholder="Oraș, județ, stradă, număr..."></textarea>
+                        <textarea name="Adresa" id="address" rows="3" required placeholder="Oraș, județ, stradetă, număr..."></textarea>
                         
+                        <input type="hidden" name="Cod Status Generat" id="hidden-status-code">
                         <input type="hidden" name="Cantitate Comandata" id="hidden-qty">
                         <input type="hidden" name="Cod Reducere Folosit" id="hidden-promo" value="Niciunul">
                         <input type="hidden" name="Total Final Plata" id="hidden-total">
@@ -391,12 +392,11 @@
     </div>
 
     <script>
-        // DATELE TALE JSONBIN INTEGRATE:
         const BIN_ID = "6a563aa6da38895dfe5bf942"; 
         const API_KEY = "$2a$10$4VMQMmdCSaGHLFzBFXLhmuxqeQKSPcoq9jFajTw6bf6xmxdoChqu.";
 
         let numarProduse = parseInt(localStorage.getItem('numarProduse')) || 0;
-        const pretUnitar = 15.50; // MODIFICAT AICI LA 15.50 PENTRU COȘ!
+        const pretUnitar = 15.50; 
         let reducereTip = localStorage.getItem('reducereTip') || "niciuna"; 
         let reducereValoare = parseFloat(localStorage.getItem('reducereValoare')) || 0;
         let codSalvat = localStorage.getItem('codSalvat') || "Niciunul";
@@ -523,6 +523,22 @@
 
         function scrollToCart() {
             document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // FUNCȚIE NOUĂ: Generează automat codul STF + 3 cifre la finalizarea comenzii
+        function genereazaCodComanda(event) {
+            // Generăm 3 cifre la întâmplare (între 100 și 999)
+            let numarAleatoriu = Math.floor(100 + Math.random() * 900);
+            let codComandaUnic = "STF" + numarAleatoriu;
+
+            // Salvăm codul în câmpul ascuns pentru a fi trimis prin Formspree pe email-ul tău
+            document.getElementById('hidden-status-code').value = codComandaUnic;
+
+            // Afișăm un mesaj clientului ca să își noteze codul
+            alert(`IMPORTANT:\nCodul tău de urmărire a comenzii este: ${codComandaUnic}\n\nNotează-ți acest cod! Îl poți folosi pe pagina "Urmărește comanda ta" pentru a vedea stadiul livrării.`);
+            
+            // Golim coșul local după trimitere
+            setTimeout(() => { golesteCos(); }, 1000);
         }
     </script>
 </body>
