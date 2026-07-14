@@ -552,10 +552,10 @@
                     serverRecord.statusuriComenzi = {};
                 }
 
-                // Înregistrăm noul cod în Cloud cu statusul „Comandă plasată”
+                // Înregistrăm noul cod în Cloud cu statusul „Comandă plasată” și noua ta descriere modificată
                 serverRecord.statusuriComenzi[codComandaUnic] = {
                     status: "Comandă plasată",
-                    descriere: `Comanda pentru ${document.getElementById('name').value.trim()} a fost înregistrată cu succes în sistem și urmează să fie pregătită!`
+                    descriere: "Comanda a fost înregistrată in sistem. Vă mulțumim pentru comandă!"
                 };
 
                 // 3. Salvăm înapoi în Cloud (PUT pe JSONbin) și AȘTEPTĂM confirmarea completă de la server (await)
@@ -572,7 +572,7 @@
                     throw new Error("Eroare la salvarea codului în baza de date.");
                 }
 
-                // 4. Afișăm alerta IMPORTANTĂ clientului, asigurându-ne că el vede codul pe ecran
+                // 4. Afișăm alerta IMPORTANTĂ clientului (fără textul cu "Te vom contacta")
                 alert(`IMPORTANT:\nCodul tău de urmărire a comenzii este: ${codComandaUnic}\n\nNotează-ți acest cod! Îl poți folosi pe pagina "Urmărește comanda ta" în meniul magazinului.`);
 
                 // 5. Trimitem datele către Formspree în fundal (prin AJAX/fetch) pentru a evita crash-ul paginii
@@ -588,11 +588,11 @@
                 });
 
                 if (formspreeRes.ok) {
-                    alert("Comandă trimisă cu succes! Te vom contacta în cel mai scurt timp.");
+                    alert("Comandă trimisă cu succes!");
                     golesteCos();
                     window.location.reload(); // Reîncărcăm pagina în siguranță abia acum
                 } else {
-                    alert("Comanda s-a înregistrat, dar a apărut o problemă la e-mail-ul Formspree. O vom procesa manual!");
+                    alert("Comanda s-a înregistrat, dar a apărut o problemă la notificarea prin e-mail-ului lui Ștefan.");
                     golesteCos();
                     window.location.reload();
                 }
