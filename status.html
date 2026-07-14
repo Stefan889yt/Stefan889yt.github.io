@@ -3,129 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status Comandă - Stefan.8894</title>
+    <title>Urmărește Comanda - Stefan.8894</title>
     <style>
+        :root {
+            --primary-color: #ff0000;
+            --primary-hover: #cc0000;
+            --bg-main: #1a1a1a;
+            --bg-card: #262626;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --success-color: #4caf50;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
+            background-color: var(--bg-main);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
-        header {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 20px;
-        }
-        .back-btn {
-            background-color: #333;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            border: 1px solid #444;
-            transition: background 0.3s;
-        }
-        .back-btn:hover {
-            background-color: #444;
-        }
+
         .container {
-            width: 100%;
+            width: 90%;
             max-width: 500px;
-            background-color: #262626;
+            background-color: var(--bg-card);
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             text-align: center;
+            border: 1px solid #333;
         }
-        input, button {
+
+        h2 {
+            margin-top: 0;
+            color: var(--text-main);
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        input {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
+            margin-bottom: 15px;
             border-radius: 6px;
             border: 1px solid #444;
             background-color: #333;
             color: white;
             box-sizing: border-box;
+            font-family: inherit;
+            font-size: 16px;
+            text-align: center;
         }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
         button {
-            background-color: #ff0000;
+            background-color: var(--primary-color);
+            color: white;
             border: none;
+            padding: 12px 25px;
+            font-size: 16px;
             font-weight: bold;
+            border-radius: 6px;
             cursor: pointer;
             transition: background 0.3s;
+            width: 100%;
+            text-transform: uppercase;
         }
+
         button:hover {
-            background-color: #cc0000;
+            background-color: var(--primary-hover);
         }
-        .status-box {
-            margin-top: 20px;
-            padding: 15px;
+
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
             border-radius: 8px;
-            background-color: #333;
             display: none;
-            border-left: 5px solid #ff9800;
             text-align: left;
+            border-left: 4px solid var(--primary-color);
+            background-color: #1a1a1a;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.succes {
+            background-color: var(--success-color);
+        }
+
+        .descriere-text {
+            font-size: 15px;
+            line-height: 1.4;
+            color: #eee;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Sectiunea Recuperare Cod */
+        .recovery-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        .btn-toggle-recovery {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px dashed #444;
+            font-size: 13px;
+            text-transform: none;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .btn-toggle-recovery:hover {
+            background-color: #333;
+            color: white;
+        }
+
+        .recovery-fields {
+            display: none;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .recovery-fields label {
+            font-size: 12px;
+            color: #aaa;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .btn-recover {
+            background-color: #444;
+            font-size: 14px;
+        }
+
+        .btn-recover:hover {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <a class="back-btn" href="index.html">⬅ Înapoi la Magazin</a>
-    </header>
-
     <div class="container">
-        <h2>Urmărește comanda ta</h2>
-        <p>Introdu codul de comandă primit de la Ștefan pentru a vedea stadiul livrării.</p>
-        <input type="text" id="order-id-input" placeholder="Ex: STF889">
+        <h2>🚚 Urmărește Comanda Ta</h2>
+        <p>Introdu codul unic primit la plasarea comenzii (ex: STF123) pentru a verifica starea livrării.</p>
+
+        <input type="text" id="status-code-input" placeholder="Cod Comandă (STF...)" style="text-transform: uppercase;">
         <button onclick="verificaStatus()">Verifică Status</button>
 
-        <div class="status-box" id="status-box">
-            <h3 id="status-title" style="color:#ff9800; margin:0 0 5px 0;">Status: Se procesează</h3>
-            <p id="status-desc" style="margin:0; font-size:14px; color:#ccc;">Comanda ta a fost primită și urmează să fie pregătită pentru livrare.</p>
+        <div class="result-box" id="result-area">
+            <div class="status-badge" id="status-badge">Se încarcă...</div>
+            <div class="descriere-text" id="status-desc">Se verifică informațiile...</div>
         </div>
+
+        <div class="recovery-section">
+            <button class="btn-toggle-recovery" onclick="toggleRecoveryForm()">Am pierdut / uitat codul meu</button>
+            
+            <div class="recovery-fields" id="recovery-form">
+                <label for="recovery-name">Nume complet din comandă:</label>
+                <input type="text" id="recovery-name" placeholder="Nume și Prenume">
+
+                <label for="recovery-phone">Număr de telefon din comandă:</label>
+                <input type="tel" id="recovery-phone" placeholder="07xxxxxxxx">
+
+                <button class="btn-recover" onclick="recupereazaCod()">Recuperează Codul</button>
+                
+                <div id="recovery-result" style="margin-top: 15px; font-weight: bold; text-align: center; color: var(--success-color);"></div>
+            </div>
+        </div>
+
+        <br>
+        <a class="back-link" href="index.html">⬅ Înapoi la Magazin</a>
     </div>
 
     <script>
-        // DATELE TALE JSONBIN INTEGRATE
-        const BIN_ID = "6a563aa6da38895dfe5bf942"; 
+        const BIN_ID = "6a563aa6da38895dfe5bf942";
         const API_KEY = "$2a$10$4VMQMmdCSaGHLFzBFXLhmuxqeQKSPcoq9jFajTw6bf6xmxdoChqu.";
 
         async function verificaStatus() {
-            const cod = document.getElementById('order-id-input').value.trim().toUpperCase();
-            const box = document.getElementById('status-box');
-            const titlu = document.getElementById('status-title');
+            const codIntrodus = document.getElementById('status-code-input').value.trim().toUpperCase();
+            const resultArea = document.getElementById('result-area');
+            const badge = document.getElementById('status-badge');
             const desc = document.getElementById('status-desc');
 
-            if (!cod) return alert("Introdu un cod!");
+            if (!codIntrodus) {
+                alert("Te rugăm să introduci un cod!");
+                return;
+            }
+
+            resultArea.style.display = "block";
+            badge.innerText = "Se încarcă...";
+            badge.className = "status-badge";
+            desc.innerText = "Se conectează la baza de date...";
 
             try {
-                // Adăugăm un număr unic la finalul URL-ului pentru a forța browserul să descarce datele proaspete direct de pe server
                 let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
                     headers: { "X-Master-Key": API_KEY }
                 });
                 let json = await res.json();
                 let comenzi = json.record.statusuriComenzi;
 
-                if (comenzi && comenzi[cod]) {
-                    titlu.innerText = "Status: " + comenzi[cod].status;
-                    desc.innerText = comenzi[cod].descriere || "Fără detalii suplimentare.";
-                    box.style.display = "block";
+                if (comenzi && comenzi[codIntrodus]) {
+                    let comanda = comenzi[codIntrodus];
+                    badge.innerText = comanda.status;
+                    desc.innerText = comanda.descriere;
+
+                    if (comanda.status === "Comandă plasată" || comanda.status === "Trimisă" || comanda.status === "Livrată") {
+                        badge.classList.add("succes");
+                    }
                 } else {
-                    alert("Codul de comandă nu a fost găsit!");
-                    box.style.display = "none";
+                    badge.innerText = "Eroare";
+                    desc.innerText = `Codul "${codIntrodus}" nu a fost găsit în sistem. Verifică dacă l-ai scris corect sau folosește opțiunea de recuperare de mai jos.`;
                 }
             } catch (e) {
-                alert("Eroare la verificarea statusului!");
-                box.style.display = "none";
+                console.error(e);
+                badge.innerText = "Eroare";
+                desc.innerText = "Nu s-a putut face conexiunea cu baza de date. Încearcă din nou mai târziu.";
+            }
+        }
+
+        // Afișează sau ascunde formularul de recuperare
+        function toggleRecoveryForm() {
+            const form = document.getElementById('recovery-form');
+            form.style.display = form.style.display === "block" ? "none" : "block";
+        }
+
+        // Funcția de căutare a codului după Nume și Telefon
+        async function recupereazaCod() {
+            const numeCautat = document.getElementById('recovery-name').value.trim().toLowerCase();
+            const telefonCautat = document.getElementById('recovery-phone').value.trim();
+            const afisajRezultat = document.getElementById('recovery-result');
+
+            if (!numeCautat || !telefonCautat) {
+                alert("Te rugăm să completezi ambele câmpuri pentru recuperare!");
+                return;
+            }
+
+            afisajRezultat.innerText = "Se caută...";
+            afisajRezultat.style.color = "var(--text-muted)";
+
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                let json = await res.json();
+                let comenzi = json.record.statusuriComenzi;
+
+                let codGasit = null;
+
+                if (comenzi) {
+                    // Căutăm în baza de date codul care se potrivește cu numele și telefonul introduse
+                    for (let cod in comenzi) {
+                        let c = comenzi[cod];
+                        if (c.nume && c.telefon) {
+                            if (c.nume.toLowerCase() === numeCautat && c.telefon === telefonCautat) {
+                                codGasit = cod;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (codGasit) {
+                    afisajRezultat.innerHTML = `Codul tău de comandă este:<br><span style="font-size: 20px; color: #ff0000; letter-spacing: 1px;">${codGasit}</span>`;
+                    afisajRezultat.style.color = "var(--success-color)";
+                    // Punem automat codul în căsuța de verificare
+                    document.getElementById('status-code-input').value = codGasit;
+                } else {
+                    afisajRezultat.innerText = "Nu s-a găsit nicio comandă cu aceste date! Verifică dacă ai scris corect.";
+                    afisajRezultat.style.color = "#ff0000";
+                }
+            } catch (e) {
+                console.error(e);
+                afisajRezultat.innerText = "Eroare la conectarea cu baza de date.";
+                afisajRezultat.style.color = "#ff0000";
             }
         }
     </script>

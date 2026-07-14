@@ -525,23 +525,23 @@
             document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // SALVARE ÎN CLOUD + TRIMITERE FORMSPREE LA FIECARE COMANDĂ NOUĂ (ASINCRONĂ ȘI SIGURĂ)
+        // SALVARE ÎN CLOUD + TRIMITERE FORMSPREE LA FIECARE COMANDĂ NOUĂ
         async function finalizeazaSiSalveazaComanda(event) {
-            event.preventDefault(); // Oprim trimiterea standard a formularului ca să nu reîncarce pagina prematur
+            event.preventDefault();
 
             const btnTrimite = document.querySelector('.btn-send');
             btnTrimite.innerText = "Se procesează...";
             btnTrimite.disabled = true;
 
-            // 1. Generăm codul unic STF + 3 cifre
             let numarAleatoriu = Math.floor(100 + Math.random() * 900);
             let codComandaUnic = "STF" + numarAleatoriu;
 
-            // Punem codul în formular în mod dinamic
             document.getElementById('hidden-status-code').value = codComandaUnic;
 
+            const numeClient = document.getElementById('name').value.trim();
+            const telefonClient = document.getElementById('phone').value.trim();
+
             try {
-                // 2. Preluăm datele actuale din JSONbin (folosim timestamp ca să evităm cache-ul browserului)
                 let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
                     headers: { "X-Master-Key": API_KEY }
                 });
@@ -552,13 +552,14 @@
                     serverRecord.statusuriComenzi = {};
                 }
 
-                // Înregistrăm noul cod în Cloud cu statusul „Comandă plasată” și noua ta descriere modificată
+                // Salvăm statusul, dar și numele + telefonul pentru a putea fi recuperate ulterior!
                 serverRecord.statusuriComenzi[codComandaUnic] = {
                     status: "Comandă plasată",
-                    descriere: "Comanda a fost înregistrată in sistem. Vă mulțumim pentru comandă!"
+                    descriere: "Comanda a fost înregistrată in sistem. Vă mulțumim pentru comandă!",
+                    nume: numeClient,
+                    telefon: telefonClient
                 };
 
-                // 3. Salvăm înapoi în Cloud (PUT pe JSONbin) și AȘTEPTĂM confirmarea completă de la server (await)
                 let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                     method: "PUT",
                     headers: {
@@ -572,10 +573,8 @@
                     throw new Error("Eroare la salvarea codului în baza de date.");
                 }
 
-                // 4. Afișăm alerta IMPORTANTĂ clientului (fără textul cu "Te vom contacta")
                 alert(`IMPORTANT:\nCodul tău de urmărire a comenzii este: ${codComandaUnic}\n\nNotează-ți acest cod! Îl poți folosi pe pagina "Urmărește comanda ta" în meniul magazinului.`);
 
-                // 5. Trimitem datele către Formspree în fundal (prin AJAX/fetch) pentru a evita crash-ul paginii
                 const form = document.getElementById('my-form');
                 let formData = new FormData(form);
 
@@ -590,9 +589,9 @@
                 if (formspreeRes.ok) {
                     alert("Comandă trimisă cu succes!");
                     golesteCos();
-                    window.location.reload(); // Reîncărcăm pagina în siguranță abia acum
+                    window.location.reload();
                 } else {
-                    alert("Comanda s-a înregistrat, dar a apărut o problemă la notificarea prin e-mail-ului lui Ștefan.");
+                    alert("Comanda s-a înregistrat, dar a apărut o problemă la notificarea prin e-mail Formspree.");
                     golesteCos();
                     window.location.reload();
                 }
