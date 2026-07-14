@@ -15,6 +15,27 @@
             flex-direction: column;
             align-items: center;
         }
+        header {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            border: 1px solid #444;
+            transition: background 0.3s;
+        }
+        .back-btn:hover {
+            background-color: #444;
+        }
         .container {
             width: 100%;
             max-width: 500px;
@@ -23,7 +44,6 @@
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             text-align: center;
-            margin-top: 50px;
         }
         input, button {
             width: 100%;
@@ -40,6 +60,10 @@
             border: none;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #cc0000;
         }
         .status-box {
             margin-top: 20px;
@@ -54,6 +78,10 @@
 </head>
 <body>
 
+    <header>
+        <a class="back-btn" href="index.html">⬅ Înapoi la Magazin</a>
+    </header>
+
     <div class="container">
         <h2>Urmărește Comanda Ta</h2>
         <p>Introdu codul de comandă primit de la Ștefan pentru a vedea stadiul livrării.</p>
@@ -67,31 +95,35 @@
     </div>
 
     <script>
-        // Aici definești manual stadiul fiecărui cod de comandă pe care l-ai dat clienților
-        const bazeDateStatus = {
-            "STF889": {
-                status: "Comandă Expediată! 🚚",
-                descriere: "Pachetul tău a fost predat curierului. Va ajunge în 1-2 zile lucrătoare."
-            },
-            "STF123": {
-                status: "În curs de pregătire 📦",
-                descriere: "Brelocul tău este gravat acum și va fi trimis în curând."
-            }
-        };
+        // DATELE TALE JSONBIN INTEGRATE:
+        const BIN_ID = "AICI_PUI_BIN_ID_UL_TAU"; 
+        const API_KEY = "$2a$10$4VMQMmdCSaGHLFzBFXLhmuxqeQKSPcoq9jFajTw6bf6xmxdoChqu.";
 
-        function verificaStatus() {
+        async function verificaStatus() {
             const cod = document.getElementById('order-id-input').value.trim().toUpperCase();
             const box = document.getElementById('status-box');
             const titlu = document.getElementById('status-title');
             const desc = document.getElementById('status-desc');
 
-            if (bazeDateStatus[cod]) {
-                titlu.innerText = "Status: " + bazeDateStatus[cod].status;
-                desc.innerText = bazeDateStatus[cod].descriere;
-                box.style.display = "block";
-            } else {
-                alert("Codul de comandă nu a fost găsit sau este greșit!");
-                box.style.display = "none";
+            if (!cod) return alert("Introdu un cod!");
+
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                let json = await res.json();
+                let comenzi = json.record.statusuriComenzi;
+
+                if (comenzi && comenzi[cod]) {
+                    titlu.innerText = "Status: " + comenzi[cod].status;
+                    desc.innerText = comenzi[cod].descriere;
+                    box.style.display = "block";
+                } else {
+                    alert("Codul de comandă nu a fost găsit!");
+                    box.style.display = "none";
+                }
+            } catch (e) {
+                alert("Eroare la verificarea statusului!");
             }
         }
     </script>

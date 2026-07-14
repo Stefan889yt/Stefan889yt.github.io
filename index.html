@@ -391,8 +391,12 @@
     </div>
 
     <script>
+        // DATELE TALE JSONBIN INTEGRATE:
+        const BIN_ID = "6a563aa6da38895dfe5bf942"; 
+        const API_KEY = "$2a$10$4VMQMmdCSaGHLFzBFXLhmuxqeQKSPcoq9jFajTw6bf6xmxdoChqu.";
+
         let numarProduse = parseInt(localStorage.getItem('numarProduse')) || 0;
-        const pretUnitar = 20.50; // Schimbat prețul la 20.50 RON
+        const pretUnitar = 20.50; 
         let reducereTip = localStorage.getItem('reducereTip') || "niciuna"; 
         let reducereValoare = parseFloat(localStorage.getItem('reducereValoare')) || 0;
         let codSalvat = localStorage.getItem('codSalvat') || "Niciunul";
@@ -459,41 +463,36 @@
             }
         }
 
-        function aplicaReducere() {
+        async function aplicaReducere() {
             const codIntrodus = document.getElementById('promo-code-input').value.trim().toUpperCase();
-            
-            if (codIntrodus === "STEFAN100") {
-                reducereTip = "procent";
-                reducereValoare = 100;
-                codSalvat = "STEFAN100 (100% Reducere)";
-            } else if (codIntrodus === "STEFAN50") {
-                reducereTip = "procent";
-                reducereValoare = 50;
-                codSalvat = "STEFAN50 (50% Reducere)";
-            } else if (codIntrodus === "STEFAN2") {
-                reducereTip = "suma";
-                reducereValoare = 2;
-                codSalvat = "STEFAN2 (-2 RON)";
-            } else if (codIntrodus === "MERCH1") {
-                reducereTip = "suma";
-                reducereValoare = 1;
-                codSalvat = "MERCH1 (-1 RON)";
-            } else if (codIntrodus === "VIP3") {
-                reducereTip = "suma";
-                reducereValoare = 3;
-                codSalvat = "VIP3 (-3 RON)";
-            } else {
-                alert("Cod invalid!");
-                return;
+            if (!codIntrodus) return alert("Introdu un cod!");
+
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                let json = await res.json();
+                let coduriActive = json.record.coduriReducere;
+
+                if (coduriActive && coduriActive[codIntrodus]) {
+                    let promo = coduriActive[codIntrodus];
+                    reducereTip = promo.tip;
+                    reducereValoare = promo.valoare;
+                    codSalvat = `${codIntrodus} (-${reducereValoare}${reducereTip === 'procent' ? '%' : ' RON'})`;
+
+                    localStorage.setItem('reducereTip', reducereTip);
+                    localStorage.setItem('reducereValoare', reducereValoare);
+                    localStorage.setItem('codSalvat', codSalvat);
+                    
+                    alert(`Codul ${codIntrodus} a fost aplicat cu succes!`);
+                    afiseazaReducereaVizual();
+                    actualizeazaCos();
+                } else {
+                    alert("Codul introdus este invalid sau a expirat!");
+                }
+            } catch(e) {
+                alert("Eroare la verificarea codului de reducere!");
             }
-            
-            localStorage.setItem('reducereTip', reducereTip);
-            localStorage.setItem('reducereValoare', reducereValoare);
-            localStorage.setItem('codSalvat', codSalvat);
-            
-            alert(`Codul ${codIntrodus} a fost aplicat!`);
-            afiseazaReducereaVizual();
-            actualizeazaCos();
         }
 
         function eliminaReducere() {
@@ -526,6 +525,5 @@
             document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
-
 </body>
 </html>
