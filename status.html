@@ -1,4 +1,105 @@
-async function verificaStatus() {
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Comandă - Stefan.8894</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            border: 1px solid #444;
+            transition: background 0.3s;
+        }
+        .back-btn:hover {
+            background-color: #444;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #262626;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ff0000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #cc0000;
+        }
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #333;
+            display: none;
+            border-left: 5px solid #ff9800;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="back-btn" href="index.html">⬅ Înapoi la Magazin</a>
+    </header>
+
+    <div class="container">
+        <h2>Urmărește Comanda Ta</h2>
+        <p>Introdu codul de comandă primit de la Ștefan pentru a vedea stadiul livrării.</p>
+        <input type="text" id="order-id-input" placeholder="Ex: STF889">
+        <button onclick="verificaStatus()">Verifică Status</button>
+
+        <div class="status-box" id="status-box">
+            <h3 id="status-title" style="color:#ff9800; margin:0 0 5px 0;">Status: Se procesează</h3>
+            <p id="status-desc" style="margin:0; font-size:14px; color:#ccc;">Comanda ta a fost primită și urmează să fie pregătită pentru livrare.</p>
+        </div>
+    </div>
+
+    <script>
+        // DATELE TALE JSONBIN INTEGRATE
+        const BIN_ID = "6a563aa6da38895dfe5bf942"; 
+        const API_KEY = "$2a$10$4VMQMmdCSaGHLFzBFXLhmuxqeQKSPcoq9jFajTw6bf6xmxdoChqu.";
+
+        async function verificaStatus() {
             const cod = document.getElementById('order-id-input').value.trim().toUpperCase();
             const box = document.getElementById('status-box');
             const titlu = document.getElementById('status-title');
@@ -7,7 +108,7 @@ async function verificaStatus() {
             if (!cod) return alert("Introdu un cod!");
 
             try {
-                // Adăugăm un număr aleatoriu la finalul link-ului (?nocache=...) ca să păcălim browserul să nu folosească date vechi
+                // Adăugăm un număr unic la finalul URL-ului pentru a forța browserul să descarce datele proaspete direct de pe server
                 let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
                     headers: { "X-Master-Key": API_KEY }
                 });
@@ -19,11 +120,14 @@ async function verificaStatus() {
                     desc.innerText = comenzi[cod].descriere || "Fără detalii suplimentare.";
                     box.style.display = "block";
                 } else {
-                    alert("Codul de comandă nu a fost găsit! Verifică dacă l-ai scris corect.");
+                    alert("Codul de comandă nu a fost găsit!");
                     box.style.display = "none";
                 }
             } catch (e) {
-                alert("Eroare la conectarea cu serverul!");
+                alert("Eroare la verificarea statusului!");
                 box.style.display = "none";
             }
         }
+    </script>
+</body>
+</html>
