@@ -44,18 +44,34 @@
             letter-spacing: 1px;
         }
 
-        .cart-icon {
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .cart-icon, .status-link-btn {
             background-color: var(--primary-color);
             color: white;
             padding: 10px 20px;
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
+            text-decoration: none;
             transition: background 0.3s;
+            font-size: 14px;
+        }
+
+        .status-link-btn {
+            background-color: #333;
+            border: 1px solid #444;
         }
 
         .cart-icon:hover {
             background-color: var(--primary-hover);
+        }
+
+        .status-link-btn:hover {
+            background-color: #444;
         }
 
         .main-layout {
@@ -112,7 +128,7 @@
             text-align: left;
         }
 
-        .btn-add, .btn-send, .btn-promo {
+        .btn-add, .btn-send, .btn-promo, .btn-remove {
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -137,6 +153,35 @@
             font-size: 14px;
             margin-left: 10px;
             text-transform: none;
+        }
+
+        .btn-remove {
+            background-color: #555;
+            padding: 8px 15px;
+            font-size: 12px;
+            width: auto;
+            margin-top: 10px;
+        }
+
+        .btn-remove:hover {
+            background-color: #444;
+        }
+
+        .btn-clear-cart {
+            background-color: #cc0000;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background 0.3s;
+        }
+
+        .btn-clear-cart:hover {
+            background-color: #990000;
         }
 
         .promo-group {
@@ -170,6 +215,9 @@
             margin-top: 0;
             border-bottom: 1px solid #333;
             padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .cart-table {
@@ -192,12 +240,17 @@
             color: var(--success-color);
         }
 
+        .discount-container {
+            display: none;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
         .discount-text {
             font-size: 16px;
             color: #ff9800;
-            text-align: right;
-            margin-top: 5px;
-            display: none;
             font-weight: bold;
         }
 
@@ -257,7 +310,10 @@
 
     <header>
         <h1>Stefan.8894 Shop</h1>
-        <div class="cart-icon" onclick="scrollToCart()">🛒 Vezi Coșul</div>
+        <div class="header-buttons">
+            <a class="status-link-btn" href="status.html">🚚 Urmărește Comanda</a>
+            <div class="cart-icon" onclick="scrollToCart()">🛒 Vezi Coșul</div>
+        </div>
     </header>
 
     <div class="main-layout">
@@ -265,7 +321,7 @@
             <h2>Breloc Original din Lemn</h2>
             <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
             <p>Breloc Stefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
-            <div class="price">7.00 RON</div>
+            <div class="price">20.50 RON</div>
             <div class="stock-info">Stoc total disponibil: 13 bucăți</div>
 
             <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul la tine!</div>
@@ -275,7 +331,10 @@
         </div>
 
         <div class="cart-page" id="cart-section">
-            <h2>🛒 Coșul tău</h2>
+            <h2>
+                <span>🛒 Coșul tău</span>
+                <button class="btn-clear-cart" id="clear-cart-btn" onclick="golesteCos()" style="display: none;">Goleste Coșul</button>
+            </h2>
             <div id="cart-empty-message">Coșul este gol în acest moment. Adaugă un produs de mai sus!</div>
             
             <div id="cart-content" style="display: none;">
@@ -297,11 +356,15 @@
                 </table>
 
                 <div class="promo-group">
-                    <input type="text" id="promo-code-input" placeholder="Introdu codul de reducere secrete">
+                    <input type="text" id="promo-code-input" placeholder="Introdu codul de reducere">
                     <button class="btn-promo" onclick="aplicaReducere()">Aplică</button>
                 </div>
                 
-                <div class="discount-text" id="discount-display">Reducere aplicată: -0 RON</div>
+                <div class="discount-container" id="discount-area">
+                    <span class="discount-text" id="discount-display">Reducere aplicată: -0 RON</span>
+                    <button class="btn-remove" onclick="eliminaReducere()">Șterge Codul</button>
+                </div>
+
                 <div class="cart-total">Total: <span id="cart-total-value">0</span> RON</div>
 
                 <div class="order-form">
@@ -329,11 +392,11 @@
 
     <script>
         let numarProduse = parseInt(localStorage.getItem('numarProduse')) || 0;
-        const pretUnitar = 7;
+        const pretUnitar = 20.50; // Schimbat prețul la 20.50 RON
         let reducereTip = localStorage.getItem('reducereTip') || "niciuna"; 
         let reducereValoare = parseFloat(localStorage.getItem('reducereValoare')) || 0;
+        let codSalvat = localStorage.getItem('codSalvat') || "Niciunul";
 
-        // La pornirea paginii, dacă aveam deja produse în coș, le afișăm
         window.onload = function() {
             if (numarProduse > 0) {
                 actualizeazaCos();
@@ -350,15 +413,34 @@
             scrollToCart();
         }
 
+        function golesteCos() {
+            numarProduse = 0;
+            reducereTip = "niciuna";
+            reducereValoare = 0;
+            codSalvat = "Niciunul";
+            
+            localStorage.removeItem('numarProduse');
+            localStorage.removeItem('reducereTip');
+            localStorage.removeItem('reducereValoare');
+            localStorage.removeItem('codSalvat');
+
+            document.getElementById('cart-empty-message').style.display = 'block';
+            document.getElementById('cart-content').style.display = 'none';
+            document.getElementById('clear-cart-btn').style.display = 'none';
+            document.getElementById('discount-area').style.display = 'none';
+            document.getElementById('promo-code-input').value = "";
+        }
+
         function actualizeazaCos() {
             if (numarProduse > 0) {
                 document.getElementById('cart-empty-message').style.display = 'none';
                 document.getElementById('cart-content').style.display = 'block';
+                document.getElementById('clear-cart-btn').style.display = 'inline-block';
                 
                 document.getElementById('cart-qty').innerText = numarProduse;
                 
                 let subtotal = numarProduse * pretUnitar;
-                document.getElementById('cart-price').innerText = subtotal + " RON";
+                document.getElementById('cart-price').innerText = subtotal.toFixed(2) + " RON";
                 
                 let totalSuma = subtotal;
                 if (reducereTip === "procent") {
@@ -373,6 +455,7 @@
                 
                 document.getElementById('hidden-qty').value = numarProduse;
                 document.getElementById('hidden-total').value = totalSuma.toFixed(2) + " RON";
+                document.getElementById('hidden-promo').value = codSalvat;
             }
         }
 
@@ -382,51 +465,61 @@
             if (codIntrodus === "STEFAN100") {
                 reducereTip = "procent";
                 reducereValoare = 100;
-                localStorage.setItem('reducereTip', "procent");
-                localStorage.setItem('reducereValoare', "100");
-                alert("Codul STEFAN100 (100% Reducere) a fost aplicat!");
+                codSalvat = "STEFAN100 (100% Reducere)";
             } else if (codIntrodus === "STEFAN50") {
                 reducereTip = "procent";
                 reducereValoare = 50;
-                localStorage.setItem('reducereTip', "procent");
-                localStorage.setItem('reducereValoare', "50");
-                alert("Codul STEFAN50 (50% Reducere) a fost aplicat!");
+                codSalvat = "STEFAN50 (50% Reducere)";
             } else if (codIntrodus === "STEFAN2") {
                 reducereTip = "suma";
                 reducereValoare = 2;
-                localStorage.setItem('reducereTip', "suma");
-                localStorage.setItem('reducereValoare', "2");
-                alert("Codul STEFAN2 (-2 RON) a fost aplicat!");
+                codSalvat = "STEFAN2 (-2 RON)";
             } else if (codIntrodus === "MERCH1") {
                 reducereTip = "suma";
                 reducereValoare = 1;
-                localStorage.setItem('reducereTip', "suma");
-                localStorage.setItem('reducereValoare', "1");
-                alert("Codul MERCH1 (-1 RON) a fost aplicat!");
+                codSalvat = "MERCH1 (-1 RON)";
             } else if (codIntrodus === "VIP3") {
                 reducereTip = "suma";
                 reducereValoare = 3;
-                localStorage.setItem('reducereTip', "suma");
-                localStorage.setItem('reducereValoare', "3");
-                alert("Codul VIP3 (-3 RON) a fost aplicat!");
+                codSalvat = "VIP3 (-3 RON)";
             } else {
                 alert("Cod invalid!");
                 return;
             }
             
-            document.getElementById('hidden-promo').value = codIntrodus;
+            localStorage.setItem('reducereTip', reducereTip);
+            localStorage.setItem('reducereValoare', reducereValoare);
+            localStorage.setItem('codSalvat', codSalvat);
+            
+            alert(`Codul ${codIntrodus} a fost aplicat!`);
             afiseazaReducereaVizual();
+            actualizeazaCos();
+        }
+
+        function eliminaReducere() {
+            reducereTip = "niciuna";
+            reducereValoare = 0;
+            codSalvat = "Niciunul";
+            
+            localStorage.removeItem('reducereTip');
+            localStorage.removeItem('reducereValoare');
+            localStorage.removeItem('codSalvat');
+            
+            document.getElementById('discount-area').style.display = "none";
+            document.getElementById('promo-code-input').value = "";
+            alert("Codul de reducere a fost eliminat.");
             actualizeazaCos();
         }
 
         function afiseazaReducereaVizual() {
             const afisajReducere = document.getElementById('discount-display');
+            const discountArea = document.getElementById('discount-area');
             if (reducereTip === "procent") {
                 afisajReducere.innerText = `Reducere aplicată: -${reducereValoare}%`;
             } else {
                 afisajReducere.innerText = `Reducere aplicată: -${reducereValoare} RON`;
             }
-            afisajReducere.style.display = "block";
+            discountArea.style.display = "flex";
         }
 
         function scrollToCart() {
