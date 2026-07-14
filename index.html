@@ -553,10 +553,10 @@
                     serverRecord.statusuriComenzi = {};
                 }
 
-                // Adăugăm noua comandă cu statusul implicit "Se procesează"
+                // STATUS MODIFICAT ÎN: "Comandă plasată"
                 serverRecord.statusuriComenzi[codComandaUnic] = {
-                    status: "Se procesează",
-                    descriere: `Comanda pentru ${document.getElementById('name').value} a fost înregistrată cu succes!`
+                    status: "Comandă plasată",
+                    descriere: `Comanda pentru ${document.getElementById('name').value} a fost înregistrată cu succes în sistem și urmează să fie pregătită!`
                 };
 
                 // Actualizăm JSONbin cu noul obiect
