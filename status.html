@@ -50,7 +50,7 @@
             margin-bottom: 25px;
         }
 
-        input {
+        input, textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
@@ -64,7 +64,13 @@
             text-align: center;
         }
 
-        input:focus {
+        textarea {
+            resize: vertical;
+            height: 80px;
+            text-align: left;
+        }
+
+        input:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-color);
         }
@@ -132,7 +138,7 @@
             color: var(--primary-color);
         }
 
-        /* Sectiune Actiuni Comanda (Anulare / Retur) */
+        /* Sectiune Actiuni Comanda */
         .actions-area {
             margin-top: 15px;
             display: none;
@@ -155,6 +161,50 @@
 
         .btn-retur:hover {
             background-color: #e68a00;
+        }
+
+        /* Modal/Popup pentru Retur Securizat */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: white;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-modal-cancel {
+            background-color: #555;
+        }
+        .btn-modal-cancel:hover {
+            background-color: #444;
         }
 
         /* Sectiune Recuperare Cod */
@@ -212,6 +262,27 @@
         <input type="text" name="Telefon_Client" id="email-action-phone">
     </form>
 
+    <div class="modal" id="retur-modal">
+        <div class="modal-content">
+            <h3>📦 Formular de Retur Securizat</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Introdu datele folosite la plasarea comenzii pentru validarea securității.</p>
+            
+            <label style="font-size: 12px; color: #aaa;">Nume complet din comandă:</label>
+            <input type="text" id="retur-nume" placeholder="Nume și Prenume" style="text-align: left;">
+
+            <label style="font-size: 12px; color: #aaa;">Număr de telefon:</label>
+            <input type="tel" id="retur-telefon" placeholder="07xxxxxxxx" style="text-align: left;">
+
+            <label style="font-size: 12px; color: #aaa;">Motivul solicitării returului:</label>
+            <textarea id="retur-motiv" placeholder="Ex: Mărimea nu se potrivește, produs defect..."></textarea>
+
+            <div class="modal-buttons">
+                <button onclick="inchideModalRetur()" class="btn-modal-cancel">Anulează</button>
+                <button id="btn-submit-retur" onclick="proceseazaReturSecurizat()">Trimite Cererea</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h2>🚚 Urmareste comanda ta</h2>
         <p>Introdu codul unic primit la plasarea comenzii (ex: STF123) pentru a verifica starea livrării.</p>
@@ -228,7 +299,7 @@
                 
                 <button class="btn-action" id="btn-cancel-action" onclick="anuleazaComanda()" style="display: none;">❌ Anulează Comanda</button>
                 
-                <button class="btn-action btn-retur" id="btn-return-action" onclick="cereRetur()" style="display: none;">📦 Solicită Retur</button>
+                <button class="btn-action btn-retur" id="btn-return-action" onclick="deschideModalRetur()" style="display: none;">📦 Solicită Retur</button>
             </div>
         </div>
 
@@ -296,20 +367,17 @@
                     badge.innerText = comanda.status;
                     desc.innerText = comanda.descriere;
 
-                    // Curățăm statusul (fără diacritice, litere mici și eliminăm bifele/emoji-urile ca să nu existe erori de potrivire)
                     let statusSimplu = comanda.status.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    statusSimplu = statusSimplu.replace(/[^a-z0-9 ]/g, "").trim(); // Elimină caracterele speciale și emoji-urile ca ✅
+                    statusSimplu = statusSimplu.replace(/[^a-z0-9 ]/g, "").trim();
 
                     if (statusSimplu.includes("comanda plasata") || statusSimplu.includes("trimisa") || statusSimplu.includes("comanda primita") || statusSimplu.includes("livrata cu succes") || statusSimplu.includes("retur solicitat")) {
                         badge.classList.add("succes");
                     }
 
-                    // Afișăm butoanele în funcție de statusul curățat
                     if (statusSimplu.includes("comanda plasata")) {
                         actionsArea.style.display = "block";
                         btnCancel.style.display = "inline-block";
                     } 
-                    // Dacă textul curățat conține "comanda primita" sau "livrata cu succes" (chiar dacă are bife în JSON), se afișează butonul de retur!
                     else if (statusSimplu.includes("comanda primita") || statusSimplu.includes("livrata cu succes")) {
                         actionsArea.style.display = "block";
                         btnReturn.style.display = "inline-block";
@@ -382,20 +450,43 @@
             }
         }
 
-        // FUNCȚIA DE SOLICITARE RETUR
-        async function cereRetur() {
+        // LOGICĂ MODAL RETUR SECURIZAT
+        function deschideModalRetur() {
+            document.getElementById('retur-modal').style.display = 'flex';
+        }
+
+        function inchideModalRetur() {
+            document.getElementById('retur-modal').style.display = 'none';
+            // Resetează câmpurile
+            document.getElementById('retur-nume').value = '';
+            document.getElementById('retur-telefon').value = '';
+            document.getElementById('retur-motiv').value = '';
+        }
+
+        async function proceseazaReturSecurizat() {
             if (!comandaCurentaDate) return;
 
-            let motiv = prompt("Te rugăm să introduci motivul returului:");
-            if (motiv === null) return; 
-            if (motiv.trim() === "") {
-                alert("Este necesar să introduci un motiv pentru a solicita returul!");
+            const numeIntrodus = document.getElementById('retur-nume').value.trim();
+            const telefonIntrodus = document.getElementById('retur-telefon').value.trim();
+            const motivIntrodus = document.getElementById('retur-motiv').value.trim();
+
+            if (!numeIntrodus || !telefonIntrodus || !motivIntrodus) {
+                alert("Te rugăm să completezi toate câmpurile: Nume, Telefon și Motivul returului!");
                 return;
             }
 
-            const btnReturn = document.getElementById('btn-return-action');
-            btnReturn.innerText = "Se procesează...";
-            btnReturn.disabled = true;
+            // Validare de securitate direct în cod comparând datele cu cele primite din baza de date
+            const numeSalvat = (comandaCurentaDate.nume || "").trim().toLowerCase();
+            const telefonSalvat = (comandaCurentaDate.telefon || "").trim();
+
+            if (numeIntrodus.toLowerCase() !== numeSalvat || telefonIntrodus !== telefonSalvat) {
+                alert("Eroare de securitate: Numele sau numărul de telefon nu corespund cu datele înregistrate pentru această comandă!");
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btn-submit-retur');
+            btnSubmit.innerText = "Se trimite...";
+            btnSubmit.disabled = true;
 
             try {
                 let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
@@ -407,7 +498,7 @@
                 if (serverRecord.statusuriComenzi && serverRecord.statusuriComenzi[comandaCurentaDate.cod]) {
                     
                     serverRecord.statusuriComenzi[comandaCurentaDate.cod].status = "Retur solicitat";
-                    serverRecord.statusuriComenzi[comandaCurentaDate.cod].descriere = `Cererea de retur a fost înregistrată. Motivul transmis: "${motiv}". Te vom contacta curând!`;
+                    serverRecord.statusuriComenzi[comandaCurentaDate.cod].descriere = `Cererea de retur a fost înregistrată. Motivul transmis: "${motivIntrodus}". Te vom contacta curând!`;
 
                     let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                         method: "PUT",
@@ -420,17 +511,21 @@
 
                     if (!updateRes.ok) throw new Error();
 
-                    trimiteNotificareFormspree(`SOLICITARE RETUR (Motiv: ${motiv})`);
+                    // Folosim datele introduse de client pentru trimiterea corectă a e-mailului
+                    comandaCurentaDate.nume = numeIntrodus;
+                    comandaCurentaDate.telefon = telefonIntrodus;
+                    await trimiteNotificareFormspree(`SOLICITARE RETUR SECURIZAT (Motiv: ${motivIntrodus})`);
 
                     alert("Cererea ta de retur a fost trimisă cu succes!");
+                    inchideModalRetur();
                     window.location.reload();
                 }
             } catch (error) {
                 console.error(error);
                 alert("A apărut o eroare la trimiterea cererii de retur. Încearcă din nou.");
             } finally {
-                btnReturn.innerText = "📦 Solicită Retur";
-                btnReturn.disabled = false;
+                btnSubmit.innerText = "Trimite Cererea";
+                btnSubmit.disabled = false;
             }
         }
 
