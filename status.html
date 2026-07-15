@@ -132,7 +132,24 @@
             color: var(--primary-color);
         }
 
-        /* Sectiunea Recuperare Cod */
+        /* Sectiune Cancel */
+        .cancel-area {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .btn-cancel {
+            background-color: #555;
+            font-size: 13px;
+            padding: 8px 15px;
+            width: auto;
+        }
+
+        .btn-cancel:hover {
+            background-color: #990000;
+        }
+
+        /* Sectiune Recuperare Cod */
         .recovery-section {
             margin-top: 30px;
             padding-top: 20px;
@@ -147,6 +164,7 @@
             text-transform: none;
             padding: 8px;
             cursor: pointer;
+            width: 100%;
         }
 
         .btn-toggle-recovery:hover {
@@ -179,6 +197,12 @@
 </head>
 <body>
 
+    <form id="cancel-email-form" action="https://formspree.io/f/xdaqnvlk" method="POST" style="display: none;">
+        <input type="text" name="ANULARE_COMANDA_COD" id="cancel-form-code">
+        <input type="text" name="Nume_Client" id="cancel-form-name">
+        <input type="text" name="Telefon_Client" id="cancel-form-phone">
+    </form>
+
     <div class="container">
         <h2>🚚 Urmărește Comanda Ta</h2>
         <p>Introdu codul unic primit la plasarea comenzii (ex: STF123) pentru a verifica starea livrării.</p>
@@ -189,6 +213,11 @@
         <div class="result-box" id="result-area">
             <div class="status-badge" id="status-badge">Se încarcă...</div>
             <div class="descriere-text" id="status-desc">Se verifică informațiile...</div>
+            
+            <div class="cancel-area" id="cancel-area">
+                <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+                <button class="btn-cancel" id="btn-cancel-action" onclick="anuleazaComanda()">❌ Anulează Comanda</button>
+            </div>
         </div>
 
         <div class="recovery-section">
@@ -214,12 +243,15 @@
     <script>
         const BIN_ID = "6a563aa6da38895dfe5bf942";
         const API_KEY = "$2a$10$4VMQMmdCSaGHLFzBFXLhmuxqeQKSPcoq9jFajTw6bf6xmxdoChqu.";
+        
+        let comandaCurentaDate = null; // Memorează detaliile comenzii verificate
 
         async function verificaStatus() {
             const codIntrodus = document.getElementById('status-code-input').value.trim().toUpperCase();
             const resultArea = document.getElementById('result-area');
             const badge = document.getElementById('status-badge');
             const desc = document.getElementById('status-desc');
+            const cancelArea = document.getElementById('cancel-area');
 
             if (!codIntrodus) {
                 alert("Te rugăm să introduci un cod!");
@@ -227,9 +259,10 @@
             }
 
             resultArea.style.display = "block";
+            cancelArea.style.display = "none"; 
             badge.innerText = "Se încarcă...";
             badge.className = "status-badge";
-            desc.innerText = "Se conectează la baza de date...";
+            desc.innerText = "Se verifică informațiile...";
 
             try {
                 let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
@@ -240,37 +273,113 @@
 
                 if (comenzi && comenzi[codIntrodus]) {
                     let comanda = comenzi[codIntrodus];
+                    comandaCurentaDate = { ...comanda, cod: codIntrodus }; // Salvăm local datele
+
                     badge.innerText = comanda.status;
                     desc.innerText = comanda.descriere;
 
                     if (comanda.status === "Comandă plasată" || comanda.status === "Trimisă" || comanda.status === "Livrată") {
                         badge.classList.add("succes");
                     }
+
+                    // BUTONUL DE ANULARE APARE DOAR DACĂ STATUSUL ESTE EXACT „Comandă plasată”
+                    if (comanda.status === "Comandă plasată") {
+                        cancelArea.style.display = "block";
+                    }
                 } else {
                     badge.innerText = "Eroare";
-                    desc.innerText = `Codul "${codIntrodus}" nu a fost găsit în sistem. Verifică dacă l-ai scris corect sau folosește opțiunea de recuperare de mai jos.`;
+                    desc.innerText = `Codul "${codIntrodus}" nu a fost găsit în sistem.`;
+                    comandaCurentaDate = null;
                 }
             } catch (e) {
                 console.error(e);
                 badge.innerText = "Eroare";
-                desc.innerText = "Nu s-a putut face conexiunea cu baza de date. Încearcă din nou mai târziu.";
+                desc.innerText = "Eroare la conexiunea cu baza de date.";
+                comandaCurentaDate = null;
             }
         }
 
-        // Afișează sau ascunde formularul de recuperare
+        // FUNCȚIA DE ANULARE COMANDĂ (La cererea clientului)
+        async function anuleazaComanda() {
+            if (!comandaCurentaDate) return;
+
+            let confirmare = confirm("Ești sigur că dorești să anulezi definitiv această comandă?");
+            if (!confirmare) return;
+
+            const btnCancel = document.getElementById('btn-cancel-action');
+            btnCancel.innerText = "Se anulează...";
+            btnCancel.disabled = true;
+
+            try {
+                // 1. Preluăm datele curate din cloud
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                let json = await res.json();
+                let serverRecord = json.record;
+
+                if (serverRecord.statusuriComenzi && serverRecord.statusuriComenzi[comandaCurentaDate.cod]) {
+                    
+                    // Verificăm încă o dată starea pe server înainte de ștergere (măsură de siguranță)
+                    if (serverRecord.statusuriComenzi[comandaCurentaDate.cod].status !== "Comandă plasată") {
+                        alert("Comanda nu mai poate fi anulată deoarece a fost deja trimisă sau procesată!");
+                        window.location.reload();
+                        return;
+                    }
+
+                    // Ștergem comanda din Cloud
+                    delete serverRecord.statusuriComenzi[comandaCurentaDate.cod];
+
+                    // Salvăm modificarea în JSONbin
+                    let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Master-Key": API_KEY
+                        },
+                        body: JSON.stringify(serverRecord)
+                    });
+
+                    if (!updateRes.ok) throw new Error();
+
+                    // 2. Trimitem notificare e-mail pe Formspree să știi și tu că s-a anulat
+                    document.getElementById('cancel-form-code').value = comandaCurentaDate.cod;
+                    document.getElementById('cancel-form-name').value = comandaCurentaDate.nume || "Nespecificat";
+                    document.getElementById('cancel-form-phone').value = comandaCurentaDate.telefon || "Nespecificat";
+
+                    const cancelForm = document.getElementById('cancel-email-form');
+                    let formData = new FormData(cancelForm);
+
+                    await fetch(cancelForm.action, {
+                        method: cancelForm.method,
+                        body: formData,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    alert("Comanda ta a fost anulată cu succes!");
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error(error);
+                alert("A apărut o problemă la procesarea anulării. Încearcă din nou!");
+            } finally {
+                btnCancel.innerText = "❌ Anulează Comanda";
+                btnCancel.disabled = false;
+            }
+        }
+
         function toggleRecoveryForm() {
             const form = document.getElementById('recovery-form');
             form.style.display = form.style.display === "block" ? "none" : "block";
         }
 
-        // Funcția de căutare a codului după Nume și Telefon
         async function recupereazaCod() {
             const numeCautat = document.getElementById('recovery-name').value.trim().toLowerCase();
             const telefonCautat = document.getElementById('recovery-phone').value.trim();
             const afisajRezultat = document.getElementById('recovery-result');
 
             if (!numeCautat || !telefonCautat) {
-                alert("Te rugăm să completezi ambele câmpuri pentru recuperare!");
+                alert("Te rugăm să completezi ambele câmpuri!");
                 return;
             }
 
@@ -287,7 +396,6 @@
                 let codGasit = null;
 
                 if (comenzi) {
-                    // Căutăm în baza de date codul care se potrivește cu numele și telefonul introduse
                     for (let cod in comenzi) {
                         let c = comenzi[cod];
                         if (c.nume && c.telefon) {
@@ -300,17 +408,16 @@
                 }
 
                 if (codGasit) {
-                    afisajRezultat.innerHTML = `Codul tău de comandă este:<br><span style="font-size: 20px; color: #ff0000; letter-spacing: 1px;">${codGasit}</span>`;
+                    afisajRezultat.innerHTML = `Codul tău este:<br><span style="font-size: 20px; color: #ff0000; letter-spacing: 1px;">${codGasit}</span>`;
                     afisajRezultat.style.color = "var(--success-color)";
-                    // Punem automat codul în căsuța de verificare
                     document.getElementById('status-code-input').value = codGasit;
                 } else {
-                    afisajRezultat.innerText = "Nu s-a găsit nicio comandă cu aceste date! Verifică dacă ai scris corect.";
+                    afisajRezultat.innerText = "Nu s-a găsit nicio comandă activă cu aceste date!";
                     afisajRezultat.style.color = "#ff0000";
                 }
             } catch (e) {
                 console.error(e);
-                afisajRezultat.innerText = "Eroare la conectarea cu baza de date.";
+                afisajRezultat.innerText = "Eroare la căutare.";
                 afisajRezultat.style.color = "#ff0000";
             }
         }
