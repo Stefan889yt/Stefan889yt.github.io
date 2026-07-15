@@ -296,15 +296,21 @@
                     badge.innerText = comanda.status;
                     desc.innerText = comanda.descriere;
 
-                    if (comanda.status === "Comandă plasată" || comanda.status === "Trimisă" || comanda.status === "Livrată" || comanda.status === "Retur solicitat") {
+                    // Curățăm statusul (fără diacritice, litere mici și eliminăm bifele/emoji-urile ca să nu existe erori de potrivire)
+                    let statusSimplu = comanda.status.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    statusSimplu = statusSimplu.replace(/[^a-z0-9 ]/g, "").trim(); // Elimină caracterele speciale și emoji-urile ca ✅
+
+                    if (statusSimplu.includes("comanda plasata") || statusSimplu.includes("trimisa") || statusSimplu.includes("comanda primita") || statusSimplu.includes("livrata cu succes") || statusSimplu.includes("retur solicitat")) {
                         badge.classList.add("succes");
                     }
 
-                    // Logica pentru afișarea butoanelor în funcție de stadiul comenzii:
-                    if (comanda.status === "Comandă plasată") {
+                    // Afișăm butoanele în funcție de statusul curățat
+                    if (statusSimplu.includes("comanda plasata")) {
                         actionsArea.style.display = "block";
                         btnCancel.style.display = "inline-block";
-                    } else if (comanda.status === "Livrată") {
+                    } 
+                    // Dacă textul curățat conține "comanda primita" sau "livrata cu succes" (chiar dacă are bife în JSON), se afișează butonul de retur!
+                    else if (statusSimplu.includes("comanda primita") || statusSimplu.includes("livrata cu succes")) {
                         actionsArea.style.display = "block";
                         btnReturn.style.display = "inline-block";
                     }
@@ -340,7 +346,10 @@
                 let serverRecord = json.record;
 
                 if (serverRecord.statusuriComenzi && serverRecord.statusuriComenzi[comandaCurentaDate.cod]) {
-                    if (serverRecord.statusuriComenzi[comandaCurentaDate.cod].status !== "Comandă plasată") {
+                    let st = serverRecord.statusuriComenzi[comandaCurentaDate.cod].status.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    st = st.replace(/[^a-z0-9 ]/g, "").trim();
+
+                    if (!st.includes("comanda plasata")) {
                         alert("Comanda nu mai poate fi anulată deoarece stadiul ei s-a modificat între timp!");
                         window.location.reload();
                         return;
@@ -359,7 +368,6 @@
 
                     if (!updateRes.ok) throw new Error();
 
-                    // Trimitere e-mail de anulare
                     trimiteNotificareFormspree("ANULARE COMANDA");
 
                     alert("Comanda ta a fost anulată cu succes!");
@@ -379,7 +387,7 @@
             if (!comandaCurentaDate) return;
 
             let motiv = prompt("Te rugăm să introduci motivul returului:");
-            if (motiv === null) return; // Clientul a apăsat cancel
+            if (motiv === null) return; 
             if (motiv.trim() === "") {
                 alert("Este necesar să introduci un motiv pentru a solicita returul!");
                 return;
@@ -398,7 +406,6 @@
 
                 if (serverRecord.statusuriComenzi && serverRecord.statusuriComenzi[comandaCurentaDate.cod]) {
                     
-                    // Modificăm statusul în bază în "Retur solicitat"
                     serverRecord.statusuriComenzi[comandaCurentaDate.cod].status = "Retur solicitat";
                     serverRecord.statusuriComenzi[comandaCurentaDate.cod].descriere = `Cererea de retur a fost înregistrată. Motivul transmis: "${motiv}". Te vom contacta curând!`;
 
@@ -413,7 +420,6 @@
 
                     if (!updateRes.ok) throw new Error();
 
-                    // Trimitere e-mail de retur cu motivul adăugat
                     trimiteNotificareFormspree(`SOLICITARE RETUR (Motiv: ${motiv})`);
 
                     alert("Cererea ta de retur a fost trimisă cu succes!");
@@ -428,7 +434,6 @@
             }
         }
 
-        // Funcție ajutătoare pentru e-mailuri asincrone
         async function trimiteNotificareFormspree(tip) {
             document.getElementById('email-action-type').value = tip;
             document.getElementById('email-action-code').value = comandaCurentaDate.cod;
