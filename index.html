@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merch Stefan.8894</title>
+    <title>Urmareste comanda ta - Stefan.8894</title>
     <style>
         :root {
             --primary-color: #ff0000;
@@ -24,584 +24,587 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        header {
-            width: 100%;
-            background-color: #111;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
-            border-bottom: 2px solid var(--primary-color);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: var(--primary-color);
-            letter-spacing: 1px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .cart-icon, .status-link-btn {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.3s;
-            font-size: 14px;
-        }
-
-        .status-link-btn {
-            background-color: #333;
-            border: 1px solid #444;
-        }
-
-        .cart-icon:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .status-link-btn:hover {
-            background-color: #444;
-        }
-
-        .main-layout {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            box-sizing: border-box;
+            justify-content: center;
+            min-height: 100vh;
         }
 
         .container {
-            width: 100%;
+            width: 90%;
             max-width: 500px;
             background-color: var(--bg-card);
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .product-img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            border: 2px solid #333;
-            margin-bottom: 20px;
-        }
-
-        .price {
-            font-size: 28px;
-            color: var(--success-color);
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .stock-info {
-            color: #ff9800;
-            font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 15px;
-        }
-
-        .delivery-info {
-            background-color: #333;
-            padding: 12px;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            margin: 15px 0;
-            border-left: 4px solid var(--success-color);
-            text-align: left;
-        }
-
-        .btn-add, .btn-send, .btn-promo, .btn-remove {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-add:hover, .btn-send:hover, .btn-promo:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-promo {
-            width: auto;
-            padding: 10px 20px;
-            font-size: 14px;
-            margin-left: 10px;
-            text-transform: none;
-        }
-
-        .btn-remove {
-            background-color: #555;
-            padding: 8px 15px;
-            font-size: 12px;
-            width: auto;
-            margin-top: 10px;
-        }
-
-        .btn-remove:hover {
-            background-color: #444;
-        }
-
-        .btn-clear-cart {
-            background-color: #cc0000;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 15px;
-            transition: background 0.3s;
-        }
-
-        .btn-clear-cart:hover {
-            background-color: #990000;
-        }
-
-        .promo-group {
-            display: flex;
-            margin: 15px 0;
-        }
-
-        .promo-group input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: white;
-            font-family: inherit;
-        }
-
-        /* Sectiune Cos */
-        .cart-page {
-            width: 100%;
-            max-width: 600px;
-            background-color: #222;
-            padding: 30px;
-            border-radius: 15px;
             border: 1px solid #333;
-            box-sizing: border-box;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
-        .cart-page h2 {
+        h2 {
             margin-top: 0;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            color: var(--text-main);
         }
 
-        .cart-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .cart-table th, .cart-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #444;
-        }
-
-        .cart-total {
-            font-size: 22px;
-            font-weight: bold;
-            text-align: right;
-            margin-top: 20px;
-            color: var(--success-color);
-        }
-
-        .discount-container {
-            display: none;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .discount-text {
-            font-size: 16px;
-            color: #ff9800;
-            font-weight: bold;
-        }
-
-        .order-form {
-            margin-top: 30px;
-            text-align: left;
-            border-top: 1px solid #333;
-            padding-top: 20px;
-        }
-
-        .order-form label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
+        p {
+            color: var(--text-muted);
             font-size: 14px;
-            color: #ccc;
+            margin-bottom: 25px;
         }
 
-        .order-form input, .order-form textarea {
+        input, textarea {
             width: 100%;
             padding: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-radius: 6px;
             border: 1px solid #444;
             background-color: #333;
             color: white;
             box-sizing: border-box;
             font-family: inherit;
+            font-size: 16px;
+            text-align: center;
         }
 
-        .order-form input:focus, .order-form textarea:focus, .promo-group input:focus {
+        textarea {
+            resize: vertical;
+            height: 80px;
+            text-align: left;
+        }
+
+        input:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-color);
         }
 
-        .yt-link {
-            display: inline-block;
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .result-box {
             margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            text-align: left;
+            border-left: 4px solid var(--primary-color);
+            background-color: #1a1a1a;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.succes {
+            background-color: var(--success-color);
+        }
+
+        .descriere-text {
+            font-size: 15px;
+            line-height: 1.4;
+            color: #eee;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
             color: var(--text-muted);
             text-decoration: none;
             font-size: 14px;
+            transition: color 0.3s;
         }
 
-        .yt-link:hover {
+        .back-link:hover {
             color: var(--primary-color);
         }
 
-        #cart-empty-message {
+        /* Sectiune Actiuni Comanda */
+        .actions-area {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .btn-action {
+            background-color: #555;
+            font-size: 13px;
+            padding: 8px 15px;
+            width: auto;
+        }
+
+        .btn-action:hover {
+            background-color: #990000;
+        }
+
+        .btn-retur {
+            background-color: #ff9800;
+        }
+
+        .btn-retur:hover {
+            background-color: #e68a00;
+        }
+
+        /* Modal/Popup pentru Securitate Actiuni (Anulare / Retur) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: white;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-modal-cancel {
+            background-color: #555;
+        }
+        .btn-modal-cancel:hover {
+            background-color: #444;
+        }
+
+        /* Sectiune Recuperare Cod */
+        .recovery-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        .btn-toggle-recovery {
+            background-color: transparent;
             color: var(--text-muted);
-            text-align: center;
-            padding: 20px 0;
-            font-style: italic;
+            border: 1px dashed #444;
+            font-size: 13px;
+            text-transform: none;
+            padding: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-toggle-recovery:hover {
+            background-color: #333;
+            color: white;
+        }
+
+        .recovery-fields {
+            display: none;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .recovery-fields label {
+            font-size: 12px;
+            color: #aaa;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .btn-recover {
+            background-color: #444;
+            font-size: 14px;
+        }
+
+        .btn-recover:hover {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Ștefan.8894 Shop</h1>
-        <div class="header-buttons">
-            <a class="status-link-btn" href="status.html">🚚 Urmărește comanda ta</a>
-            <div class="cart-icon" onclick="scrollToCart()">🛒 Vezi Coșul</div>
-        </div>
-    </header>
+    <form id="action-email-form" action="https://formspree.io/f/xdaqnvlk" method="POST" style="display: none;">
+        <input type="text" name="TIP_SOLICITARE" id="email-action-type">
+        <input type="text" name="COD_COMANDA" id="email-action-code">
+        <input type="text" name="Nume_Client" id="email-action-name">
+        <input type="text" name="Telefon_Client" id="email-action-phone">
+    </form>
 
-    <div class="main-layout">
-        <div class="container">
-            <h2>Breloc Original din Lemn</h2>
-            <img class="product-img" src="breloc.jpg" alt="Breloc din lemn Stefan">
-            <p>Breloc Ștefan din lemn, gravat și realizat manual. Poartă-l cu tine peste tot!</p>
-            <div class="price">15.50 RON</div>
-            <div class="stock-info">Stoc total disponibil: 13 bucăți</div>
-
-            <div class="delivery-info">📦 <strong>Plata se face Ramburs (La Livrare)</strong> când ajunge curierul la tine!</div>
-            <button class="btn-add" id="add-button" onclick="adaugaInCos()">Adaugă în coș</button>
-            <br>
-            <a class="yt-link" href="https://youtube.com/@Stefan.8894" target="_blank">Vizitează canalul meu de YouTube</a>
-        </div>
-
-        <div class="cart-page" id="cart-section">
-            <h2>
-                <span>🛒 Coșul tău</span>
-                <button class="btn-clear-cart" id="clear-cart-btn" onclick="golesteCos()" style="display: none;">Goleste Coșul</button>
-            </h2>
-            <div id="cart-empty-message">Coșul este gol în acest moment. Adaugă un produs de mai sus!</div>
+    <div class="modal" id="security-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Securitate Comandă</h3>
+            <p id="modal-subtitle" style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Introdu datele folosite la plasarea comenzii pentru confirmare.</p>
             
-            <div id="cart-content" style="display: none;">
-                <table class="cart-table">
-                    <thead>
-                        <tr>
-                            <th>Produs</th>
-                            <th>Cantitate</th>
-                            <th>Preț</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Breloc Original din Lemn</td>
-                            <td id="cart-qty">0</td>
-                            <td id="cart-price">0 RON</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <label style="font-size: 12px; color: #aaa;">Nume complet din comandă:</label>
+            <input type="text" id="sec-nume" placeholder="Nume și Prenume" style="text-align: left;">
 
-                <div class="promo-group">
-                    <input type="text" id="promo-code-input" placeholder="Introdu codul de reducere">
-                    <button class="btn-promo" onclick="aplicaReducere()">Aplică</button>
-                </div>
-                
-                <div class="discount-container" id="discount-area">
-                    <span class="discount-text" id="discount-display">Reducere aplicată: -0 RON</span>
-                    <button class="btn-remove" onclick="eliminaReducere()">Șterge Codul</button>
-                </div>
+            <label style="font-size: 12px; color: #aaa;">Număr de telefon:</label>
+            <input type="tel" id="sec-telefon" placeholder="07xxxxxxxx" style="text-align: left;">
 
-                <div class="cart-total">Total: <span id="cart-total-value">0</span> RON</div>
+            <div id="container-motiv" style="display: none;">
+                <label style="font-size: 12px; color: #aaa;">Motivul solicitării returului:</label>
+                <textarea id="sec-motiv" placeholder="Ex: Mărimea nu se potrivește, produs defect..."></textarea>
+            </div>
 
-                <div class="order-form">
-                    <h3>Detalii Livrare</h3>
-                    <form action="https://formspree.io/f/xdaqnvlk" method="POST" id="my-form" onsubmit="finalizeazaSiSalveazaComanda(event)">
-                        <label for="name">Nume complet:</label>
-                        <input type="text" name="Nume" id="name" required placeholder="Nume și Prenume">
-
-                        <label for="phone">Număr de Telefon:</label>
-                        <input type="tel" name="Telefon" id="phone" required placeholder="07xxxxxxxx">
-
-                        <label for="address">Adresă de livrare:</label>
-                        <textarea name="Adresa" id="address" rows="3" required placeholder="Oraș, județ, stradă, număr..."></textarea>
-                        
-                        <input type="hidden" name="Cod Status Generat" id="hidden-status-code">
-                        <input type="hidden" name="Cantitate Comandata" id="hidden-qty">
-                        <input type="hidden" name="Cod Reducere Folosit" id="hidden-promo" value="Niciunul">
-                        <input type="hidden" name="Total Final Plata" id="hidden-total">
-
-                        <button type="submit" class="btn-send">Finalizează Comanda</button>
-                    </form>
-                </div>
+            <div class="modal-buttons">
+                <button onclick="inchideModal()" class="btn-modal-cancel">Anulează</button>
+                <button id="btn-submit-action" onclick="executaActiuneSecurizata()">Confirmă</button>
             </div>
         </div>
     </div>
 
+    <div class="container">
+        <h2>🚚 Urmareste comanda ta</h2>
+        <p>Introdu codul unic primit la plasarea comenzii (ex: STF123) pentru a verifica starea livrării.</p>
+
+        <input type="text" id="status-code-input" placeholder="Cod comanda (STF...)" style="text-transform: uppercase;">
+        <button onclick="verificaStatus()">Verifică Status</button>
+
+        <div class="result-box" id="result-area">
+            <div class="status-badge" id="status-badge">Se încarcă...</div>
+            <div class="descriere-text" id="status-desc">Se verifică informațiile...</div>
+            
+            <div class="actions-area" id="actions-area">
+                <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+                
+                <button class="btn-action" id="btn-cancel-action" onclick="deschideModal('ANULARE')" style="display: none;">❌ Anulează Comanda</button>
+                
+                <button class="btn-action btn-retur" id="btn-return-action" onclick="deschideModal('RETUR')" style="display: none;">📦 Solicită Retur</button>
+            </div>
+        </div>
+
+        <div class="recovery-section">
+            <button class="btn-toggle-recovery" onclick="toggleRecoveryForm()">Am pierdut / uitat codul meu</button>
+            
+            <div class="recovery-fields" id="recovery-form">
+                <label for="recovery-name">Nume complet din comandă:</label>
+                <input type="text" id="recovery-name" placeholder="Nume și Prenume">
+
+                <label for="recovery-phone">Număr de telefon din comandă:</label>
+                <input type="tel" id="recovery-phone" placeholder="07xxxxxxxx">
+
+                <button class="btn-recover" onclick="recupereazaCod()">Recuperează Codul</button>
+                
+                <div id="recovery-result" style="margin-top: 15px; font-weight: bold; text-align: center; color: var(--success-color);"></div>
+            </div>
+        </div>
+
+        <br>
+        <a class="back-link" href="index.html">⬅ Înapoi la Magazin</a>
+    </div>
+
     <script>
-        const BIN_ID = "6a563aa6da38895dfe5bf942"; 
+        const BIN_ID = "6a563aa6da38895dfe5bf942";
         const API_KEY = "$2a$10$4VMQMmdCSaGHLFzBFXLhmuxqeQKSPcoq9jFajTw6bf6xmxdoChqu.";
+        
+        let comandaCurentaDate = null;
+        let actiuneCurenta = ""; // Poate fi "ANULARE" sau "RETUR"
 
-        let numarProduse = parseInt(localStorage.getItem('numarProduse')) || 0;
-        const pretUnitar = 15.50; 
-        let reducereTip = localStorage.getItem('reducereTip') || "niciuna"; 
-        let reducereValoare = parseFloat(localStorage.getItem('reducereValoare')) || 0;
-        let codSalvat = localStorage.getItem('codSalvat') || "Niciunul";
-
-        window.onload = function() {
-            if (numarProduse > 0) {
-                actualizeazaCos();
-                if (reducereTip !== "niciuna") {
-                    afiseazaReducereaVizual();
-                }
-            }
-        }
-
-        function adaugaInCos() {
-            numarProduse++;
-            localStorage.setItem('numarProduse', numarProduse);
-            actualizeazaCos();
-            scrollToCart();
-        }
-
-        function golesteCos() {
-            numarProduse = 0;
-            reducereTip = "niciuna";
-            reducereValoare = 0;
-            codSalvat = "Niciunul";
+        async function verificaStatus() {
+            const codIntrodus = document.getElementById('status-code-input').value.trim().toUpperCase();
+            const resultArea = document.getElementById('result-area');
+            const badge = document.getElementById('status-badge');
+            const desc = document.getElementById('status-desc');
             
-            localStorage.removeItem('numarProduse');
-            localStorage.removeItem('reducereTip');
-            localStorage.removeItem('reducereValoare');
-            localStorage.removeItem('codSalvat');
+            const actionsArea = document.getElementById('actions-area');
+            const btnCancel = document.getElementById('btn-cancel-action');
+            const btnReturn = document.getElementById('btn-return-action');
 
-            document.getElementById('cart-empty-message').style.display = 'block';
-            document.getElementById('cart-content').style.display = 'none';
-            document.getElementById('clear-cart-btn').style.display = 'none';
-            document.getElementById('discount-area').style.display = 'none';
-            document.getElementById('promo-code-input').value = "";
-        }
-
-        function actualizeazaCos() {
-            if (numarProduse > 0) {
-                document.getElementById('cart-empty-message').style.display = 'none';
-                document.getElementById('cart-content').style.display = 'block';
-                document.getElementById('clear-cart-btn').style.display = 'inline-block';
-                
-                document.getElementById('cart-qty').innerText = numarProduse;
-                
-                let subtotal = numarProduse * pretUnitar;
-                document.getElementById('cart-price').innerText = subtotal.toFixed(2) + " RON";
-                
-                let totalSuma = subtotal;
-                if (reducereTip === "procent") {
-                    totalSuma = subtotal - (subtotal * (reducereValoare / 100));
-                } else if (reducereTip === "suma") {
-                    totalSuma = subtotal - reducereValoare;
-                }
-                
-                if(totalSuma < 0) totalSuma = 0;
-                
-                document.getElementById('cart-total-value').innerText = totalSuma.toFixed(2);
-                
-                document.getElementById('hidden-qty').value = numarProduse;
-                document.getElementById('hidden-total').value = totalSuma.toFixed(2) + " RON";
-                document.getElementById('hidden-promo').value = codSalvat;
+            if (!codIntrodus) {
+                alert("Te rugăm să introduci un cod!");
+                return;
             }
-        }
 
-        async function aplicaReducere() {
-            const codIntrodus = document.getElementById('promo-code-input').value.trim().toUpperCase();
-            if (!codIntrodus) return alert("Introdu un cod!");
+            resultArea.style.display = "block";
+            actionsArea.style.display = "none"; 
+            btnCancel.style.display = "none";
+            btnReturn.style.display = "none";
 
-            try {
-                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { "X-Master-Key": API_KEY }
-                });
-                let json = await res.json();
-                let coduriActive = json.record.coduriReducere;
-
-                if (coduriActive && coduriActive[codIntrodus]) {
-                    let promo = coduriActive[codIntrodus];
-                    reducereTip = promo.tip;
-                    reducereValoare = promo.valoare;
-                    codSalvat = `${codIntrodus} (-${reducereValoare}${reducereTip === 'procent' ? '%' : ' RON'})`;
-
-                    localStorage.setItem('reducereTip', reducereTip);
-                    localStorage.setItem('reducereValoare', reducereValoare);
-                    localStorage.setItem('codSalvat', codSalvat);
-                    
-                    alert(`Codul ${codIntrodus} a fost aplicat cu succes!`);
-                    afiseazaReducereaVizual();
-                    actualizeazaCos();
-                } else {
-                    alert("Codul introdus este invalid sau a expirat!");
-                }
-            } catch(e) {
-                alert("Eroare la verificarea codului de reducere!");
-            }
-        }
-
-        function eliminaReducere() {
-            reducereTip = "niciuna";
-            reducereValoare = 0;
-            codSalvat = "Niciunul";
-            
-            localStorage.removeItem('reducereTip');
-            localStorage.removeItem('reducereValoare');
-            localStorage.removeItem('codSalvat');
-            
-            document.getElementById('discount-area').style.display = "none";
-            document.getElementById('promo-code-input').value = "";
-            alert("Codul de reducere a fost eliminat.");
-            actualizeazaCos();
-        }
-
-        function afiseazaReducereaVizual() {
-            const afisajReducere = document.getElementById('discount-display');
-            const discountArea = document.getElementById('discount-area');
-            if (reducereTip === "procent") {
-                afisajReducere.innerText = `Reducere aplicată: -${reducereValoare}%`;
-            } else {
-                afisajReducere.innerText = `Reducere aplicată: -${reducereValoare} RON`;
-            }
-            discountArea.style.display = "flex";
-        }
-
-        function scrollToCart() {
-            document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // SALVARE ÎN CLOUD + TRIMITERE FORMSPREE LA FIECARE COMANDĂ NOUĂ
-        async function finalizeazaSiSalveazaComanda(event) {
-            event.preventDefault();
-
-            const btnTrimite = document.querySelector('.btn-send');
-            btnTrimite.innerText = "Se procesează...";
-            btnTrimite.disabled = true;
-
-            let numarAleatoriu = Math.floor(100 + Math.random() * 900);
-            let codComandaUnic = "STF" + numarAleatoriu;
-
-            document.getElementById('hidden-status-code').value = codComandaUnic;
-
-            const numeClient = document.getElementById('name').value.trim();
-            const telefonClient = document.getElementById('phone').value.trim();
+            badge.innerText = "Se încarcă...";
+            badge.className = "status-badge";
+            desc.innerText = "Se verifică informațiile...";
 
             try {
                 let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
                     headers: { "X-Master-Key": API_KEY }
                 });
-                let data = await res.json();
-                let serverRecord = data.record;
+                let json = await res.json();
+                let comenzi = json.record.statusuriComenzi;
 
-                if (!serverRecord.statusuriComenzi) {
-                    serverRecord.statusuriComenzi = {};
-                }
+                if (comenzi && comenzi[codIntrodus]) {
+                    let comanda = comenzi[codIntrodus];
+                    comandaCurentaDate = { ...comanda, cod: codIntrodus };
 
-                // Salvăm statusul, dar și numele + telefonul pentru a putea fi recuperate ulterior!
-                serverRecord.statusuriComenzi[codComandaUnic] = {
-                    status: "Comandă plasată",
-                    descriere: "Comanda a fost înregistrată in sistem. Vă mulțumim pentru comandă!",
-                    nume: numeClient,
-                    telefon: telefonClient
-                };
+                    badge.innerText = comanda.status;
+                    desc.innerText = comanda.descriere;
 
-                let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Master-Key": API_KEY
-                    },
-                    body: JSON.stringify(serverRecord)
-                });
+                    let statusSimplu = comanda.status.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    statusSimplu = statusSimplu.replace(/[^a-z0-9 ]/g, "").trim();
 
-                if (!updateRes.ok) {
-                    throw new Error("Eroare la salvarea codului în baza de date.");
-                }
-
-                alert(`IMPORTANT:\nCodul tău de urmărire a comenzii este: ${codComandaUnic}\n\nNotează-ți acest cod! Îl poți folosi pe pagina "Urmărește comanda ta" în meniul magazinului.`);
-
-                const form = document.getElementById('my-form');
-                let formData = new FormData(form);
-
-                let formspreeRes = await fetch(form.action, {
-                    method: form.method,
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
+                    if (statusSimplu.includes("comanda plasata") || statusSimplu.includes("trimisa") || statusSimplu.includes("comanda primita") || statusSimplu.includes("livrata cu succes") || statusSimplu.includes("retur solicitat")) {
+                        badge.classList.add("succes");
                     }
-                });
 
-                if (formspreeRes.ok) {
-                    alert("Comandă trimisă cu succes!");
-                    golesteCos();
-                    window.location.reload();
+                    if (statusSimplu.includes("comanda plasata")) {
+                        actionsArea.style.display = "block";
+                        btnCancel.style.display = "inline-block";
+                    } 
+                    else if (statusSimplu.includes("comanda primita") || statusSimplu.includes("livrata cu succes")) {
+                        actionsArea.style.display = "block";
+                        btnReturn.style.display = "inline-block";
+                    }
                 } else {
-                    alert("Comanda s-a înregistrat, dar a apărut o problemă la notificarea prin e-mail Formspree.");
-                    golesteCos();
+                    badge.innerText = "Eroare";
+                    desc.innerText = `Codul "${codIntrodus}" nu a fost găsit în sistem.`;
+                    comandaCurentaDate = null;
+                }
+            } catch (e) {
+                console.error(e);
+                badge.innerText = "Eroare";
+                desc.innerText = "Eroare la conexiunea cu baza de date.";
+                comandaCurentaDate = null;
+            }
+        }
+
+        // DESCHIDERE & INCHIDERE MODAL SECURED
+        function deschideModal(tip) {
+            actiuneCurenta = tip;
+            const modal = document.getElementById('security-modal');
+            const title = document.getElementById('modal-title');
+            const subtitle = document.getElementById('modal-subtitle');
+            const containerMotiv = document.getElementById('container-motiv');
+            const btnSubmit = document.getElementById('btn-submit-action');
+
+            modal.style.display = 'flex';
+
+            if (tip === "ANULARE") {
+                title.innerText = "❌ Anulare Comandă Securizată";
+                subtitle.innerText = "Introdu datele folosite la plasarea comenzii pentru a o anula definitiv.";
+                containerMotiv.style.display = "none";
+                btnSubmit.innerText = "Anulează Comanda";
+            } else if (tip === "RETUR") {
+                title.innerText = "📦 Solicitare Retur Securizat";
+                subtitle.innerText = "Introdu datele de contact și motivul returului pentru trimiterea cererii.";
+                containerMotiv.style.display = "block";
+                btnSubmit.innerText = "Trimite Cerere Retur";
+            }
+        }
+
+        function inchideModal() {
+            document.getElementById('security-modal').style.display = 'none';
+            document.getElementById('sec-nume').value = '';
+            document.getElementById('sec-telefon').value = '';
+            document.getElementById('sec-motiv').value = '';
+            actiuneCurenta = "";
+        }
+
+        // EXECUTIE ACTIUNE SECURIZATA (ANULARE SAU RETUR)
+        async function executaActiuneSecurizata() {
+            if (!comandaCurentaDate) return;
+
+            const numeIntrodus = document.getElementById('sec-nume').value.trim();
+            const telefonIntrodus = document.getElementById('sec-telefon').value.trim();
+            const motivIntrodus = document.getElementById('sec-motiv').value.trim();
+
+            if (!numeIntrodus || !telefonIntrodus) {
+                alert("Te rugăm să introduci Numele și Telefonul pentru validare!");
+                return;
+            }
+
+            if (actiuneCurenta === "RETUR" && !motivIntrodus) {
+                alert("Te rugăm să introduci motivul pentru care dorești returul!");
+                return;
+            }
+
+            // Validare de securitate
+            const numeSalvat = (comandaCurentaDate.nume || "").trim().toLowerCase();
+            const telefonSalvat = (comandaCurentaDate.telefon || "").trim();
+
+            if (numeIntrodus.toLowerCase() !== numeSalvat || telefonIntrodus !== telefonSalvat) {
+                alert("Date incorecte! Numele sau numărul de telefon nu se potrivesc cu cele din comandă.");
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btn-submit-action');
+            btnSubmit.innerText = "Se procesează...";
+            btnSubmit.disabled = true;
+
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                let json = await res.json();
+                let serverRecord = json.record;
+
+                if (serverRecord.statusuriComenzi && serverRecord.statusuriComenzi[comandaCurentaDate.cod]) {
+                    
+                    if (actiuneCurenta === "ANULARE") {
+                        // Verificăm dacă nu cumva statusul s-a schimbat între timp
+                        let st = serverRecord.statusuriComenzi[comandaCurentaDate.cod].status.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        st = st.replace(/[^a-z0-9 ]/g, "").trim();
+
+                        if (!st.includes("comanda plasata")) {
+                            alert("Comanda nu mai poate fi anulată deoarece a fost deja procesată/predată curierului!");
+                            window.location.reload();
+                            return;
+                        }
+
+                        // Ștergem comanda din sistem
+                        delete serverRecord.statusuriComenzi[comandaCurentaDate.cod];
+
+                        let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Master-Key": API_KEY
+                            },
+                            body: JSON.stringify(serverRecord)
+                        });
+
+                        if (!updateRes.ok) throw new Error();
+
+                        // Trimitere notificare pe email
+                        comandaCurentaDate.nume = numeIntrodus;
+                        comandaCurentaDate.telefon = telefonIntrodus;
+                        await trimiteNotificareFormspree("ANULARE COMANDA SECURIZATA");
+
+                        alert("Comanda ta a fost anulată cu succes!");
+
+                    } else if (actiuneCurenta === "RETUR") {
+                        // Actualizăm statusul în bază în "Retur solicitat"
+                        serverRecord.statusuriComenzi[comandaCurentaDate.cod].status = "Retur solicitat";
+                        serverRecord.statusuriComenzi[comandaCurentaDate.cod].descriere = `Cererea de retur a fost înregistrată. Motivul transmis: "${motivIntrodus}". Te vom contacta curând!`;
+
+                        let updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Master-Key": API_KEY
+                            },
+                            body: JSON.stringify(serverRecord)
+                        });
+
+                        if (!updateRes.ok) throw new Error();
+
+                        // Trimitere notificare pe email
+                        comandaCurentaDate.nume = numeIntrodus;
+                        comandaCurentaDate.telefon = telefonIntrodus;
+                        await trimiteNotificareFormspree(`SOLICITARE RETUR SECURIZAT (Motiv: ${motivIntrodus})`);
+
+                        alert("Solicitarea ta de retur a fost înregistrată cu succes!");
+                    }
+
+                    inchideModal();
                     window.location.reload();
                 }
-
             } catch (error) {
-                console.error("Eroare la salvare:", error);
-                alert("A apărut o eroare la conexiunea cu baza de date! Te rugăm să încerci din nou.");
+                console.error(error);
+                alert("A apărut o problemă la conexiunea cu baza de date. Încearcă din nou.");
             } finally {
-                btnTrimite.innerText = "Finalizează Comanda";
-                btnTrimite.disabled = false;
+                btnSubmit.innerText = "Confirmă";
+                btnSubmit.disabled = false;
+            }
+        }
+
+        async function trimiteNotificareFormspree(tip) {
+            document.getElementById('email-action-type').value = tip;
+            document.getElementById('email-action-code').value = comandaCurentaDate.cod;
+            document.getElementById('email-action-name').value = comandaCurentaDate.nume || "Nespecificat";
+            document.getElementById('email-action-phone').value = comandaCurentaDate.telefon || "Nespecificat";
+
+            const actionForm = document.getElementById('action-email-form');
+            let formData = new FormData(actionForm);
+
+            await fetch(actionForm.action, {
+                method: actionForm.method,
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+        }
+
+        function toggleRecoveryForm() {
+            const form = document.getElementById('recovery-form');
+            form.style.display = form.style.display === "block" ? "none" : "block";
+        }
+
+        async function recupereazaCod() {
+            const numeCautat = document.getElementById('recovery-name').value.trim().toLowerCase();
+            const telefonCautat = document.getElementById('recovery-phone').value.trim();
+            const afisajRezultat = document.getElementById('recovery-result');
+
+            if (!numeCautat || !telefonCautat) {
+                alert("Te rugăm să completezi ambele câmpuri!");
+                return;
+            }
+
+            afisajRezultat.innerText = "Se caută...";
+            afisajRezultat.style.color = "var(--text-muted)";
+
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest?nocache=${Date.now()}`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                let json = await res.json();
+                let comenzi = json.record.statusuriComenzi;
+
+                let codGasit = null;
+
+                if (comenzi) {
+                    for (let cod in comenzi) {
+                        let c = comenzi[cod];
+                        if (c.nume && c.telefon) {
+                            if (c.nume.toLowerCase() === numeCautat && c.telefon === telefonCautat) {
+                                codGasit = cod;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (codGasit) {
+                    afisajRezultat.innerHTML = `Codul tău este:<br><span style="font-size: 20px; color: #ff0000; letter-spacing: 1px;">${codGasit}</span>`;
+                    afisajRezultat.style.color = "var(--success-color)";
+                    document.getElementById('status-code-input').value = codGasit;
+                } else {
+                    afisajRezultat.innerText = "Nu s-a găsit nicio comandă activă cu aceste date!";
+                    afisajRezultat.style.color = "#ff0000";
+                }
+            } catch (e) {
+                console.error(e);
+                afisajRezultat.innerText = "Eroare la căutare.";
+                afisajRezultat.style.color = "#ff0000";
             }
         }
     </script>
